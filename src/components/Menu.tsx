@@ -2,10 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LuBarChart3, LuCalendarDays, LuHome, LuUser } from "react-icons/lu";
+import { LuCalendarDays, LuHome, LuUser } from "react-icons/lu";
 
 const menuItems = [
   {
@@ -29,19 +29,12 @@ const menuItems = [
         href: "/dashboard/agenda",
         role: [Role.ADMIN],
       },
-      {
-        icon: <LuBarChart3 />,
-        label: "Perhitungan Suara",
-        href: "#",
-        role: [Role.ADMIN],
-      },
     ],
   },
 ];
 
-const Menu = () => {
+const Menu = ({ session }: { session: Session | null }) => {
   const pathname = usePathname();
-  const { data: session } = useSession();
 
   return (
     <div className="mt-4 text-sm">

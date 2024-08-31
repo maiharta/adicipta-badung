@@ -1,13 +1,16 @@
+import { auth } from "@/auth";
 import Menu from "@/components/Menu";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <div className="h-screen flex">
       {/* LEFT */}
@@ -31,11 +34,11 @@ export default function DashboardLayout({
             className="lg:hidden"
           />
         </Link>
-        <Menu />
+        <Menu session={session} />
       </div>
       {/* RIGHT */}
       <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-scroll flex flex-col p-4 gap-4">
-        <Navbar />
+        <Navbar session={session} />
         {children}
       </div>
     </div>

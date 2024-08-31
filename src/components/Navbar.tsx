@@ -9,11 +9,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LuLogOut } from "react-icons/lu";
 import { logout } from "@/lib/actions";
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
-const Navbar = () => {
-  const { data: session } = useSession();
-
+const Navbar = ({ session }: { session: Session | null }) => {
   return (
     <div className="flex items-center justify-between bg-white p-4 rounded-md">
       {/* ICONS AND USER */}
