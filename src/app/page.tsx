@@ -40,9 +40,16 @@ const HomePage = () => {
           </div>
         ))}
       </div>
-      <Link href="/dashboard">
-        <Button className="text-xl">JADWAL KAMPANYE</Button>
-      </Link>
+      <div className="flex flex-col items-center space-y-2">
+        <Link href="/dashboard">
+          <Button className="text-xl">JADWAL KAMPANYE</Button>
+        </Link>
+        <Link href="#">
+          <Button variant="outline" className="text-xl">
+            INPUT SUARA
+          </Button>
+        </Link>
+      </div>
       <div className="max-w-2xl space-y-2 tracking-tight">
         <h2 className="text-2xl font-semibold text-center underline">
           VISI & MISI
