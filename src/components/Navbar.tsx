@@ -12,7 +12,7 @@ import { logout } from "@/lib/actions";
 import { useSession } from "next-auth/react";
 
 const Navbar = () => {
-  const { data } = useSession();
+  const { data: session } = useSession();
 
   return (
     <div className="flex items-center justify-between bg-white p-4 rounded-md">
@@ -20,7 +20,10 @@ const Navbar = () => {
       <div className="flex items-center gap-2 justify-end w-full">
         <div className="flex flex-col">
           <span className="text-sm leading-3 font-medium">
-            {data?.user.username}
+            {session?.user.username}
+          </span>
+          <span className="text-xs text-muted-foreground text-right">
+            {session?.user.role}
           </span>
         </div>
         <DropdownMenu>

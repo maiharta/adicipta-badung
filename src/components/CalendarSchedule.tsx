@@ -8,10 +8,11 @@ import { useEffect, useState } from "react";
 import { LuCalendarDays, LuMapPin, LuTimer } from "react-icons/lu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { File, Prisma, Event as PrismaEvent } from "@prisma/client";
+import { File } from "@prisma/client";
 import { Label } from "./ui/label";
 import { formatDateToLocal } from "@/lib/utils";
 import { FileItem } from "./FileItem";
+import { Event as IEvent } from "@/lib/definitions";
 
 interface MyEvent extends Event {
   description: string;
@@ -29,11 +30,7 @@ const localizer = momentLocalizer(moment);
 export const CalendarSchedule = ({
   prismaEvents,
 }: {
-  prismaEvents: Prisma.EventGetPayload<{
-    include: {
-      attachments: true;
-    };
-  }>[];
+  prismaEvents: IEvent[];
 }) => {
   const events = prismaEvents.map<MyEvent>((event) => ({
     title: event.title,
@@ -80,7 +77,7 @@ export const CalendarSchedule = ({
   }, []);
 
   return (
-    <div className="container flex flex-col gap-4 lg:h-screen py-4">
+    <div className="flex flex-col gap-4 lg:h-screen">
       {/* <Image
           src="/logo.webp"
           alt="logo"

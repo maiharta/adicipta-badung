@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
@@ -8,12 +9,24 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/admin");
+      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
+        if (isLoggedIn) {
+          const role = auth.user.role;
+          if (nextUrl.pathname.startsWith("/dashboard")) {
+            return true;
+          } else if (
+            nextUrl.pathname.startsWith("/user") ||
+            (nextUrl.pathname.startsWith("/agenda") && role === Role.ADMIN)
+          ) {
+            return true;
+          }
+
+          return false;
+        }
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn && nextUrl.pathname.startsWith("/login")) {
-        return Response.redirect(new URL("/admin", nextUrl));
+        return Response.redirect(new URL("/dashboard", nextUrl));
       }
       return true;
     },

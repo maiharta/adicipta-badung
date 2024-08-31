@@ -40,7 +40,7 @@ const HomePage = () => {
           </div>
         ))}
       </div>
-      <Link href="/jadwal-kampanye">
+      <Link href="/dashboard">
         <Button className="text-xl">JADWAL KAMPANYE</Button>
       </Link>
       <div className="max-w-2xl space-y-2 tracking-tight">

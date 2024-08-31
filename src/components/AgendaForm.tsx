@@ -19,36 +19,25 @@ import { Textarea } from "./ui/textarea";
 import { MyDropzone } from "./MyDropzone";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { cn, formatDateToLocal } from "@/lib/utils";
+import { formatDateToLocal } from "@/lib/utils";
 import { agendaFormSchema } from "@/lib/schemas";
 import { createAgenda, updateAgenda } from "@/lib/actions";
-import { File, Prisma } from "@prisma/client";
+import { File } from "@prisma/client";
 import { FileItem } from "./FileItem";
+import { Event } from "@/lib/definitions";
 
 type AgendaFormProps =
   | {
       mode: "create";
-      event?: Prisma.EventGetPayload<{
-        include: {
-          attachments: true;
-        };
-      }>;
+      event?: Event;
     }
   | {
       mode: "edit";
-      event: Prisma.EventGetPayload<{
-        include: {
-          attachments: true;
-        };
-      }>;
+      event: Event;
     }
   | {
       mode: "view";
-      event: Prisma.EventGetPayload<{
-        include: {
-          attachments: true;
-        };
-      }>;
+      event: Event;
     };
 
 export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
@@ -92,7 +81,7 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
     if (mode === "edit" || mode === "view") {
       setAttachmentFiles(event.attachments);
     }
-  }, []);
+  }, [event?.attachments, mode]);
 
   return (
     <Form {...form}>

@@ -73,8 +73,10 @@ export const columns: ColumnDef<Event>[] = [
     cell: ({ row }) => {
       return (
         <ActionButtonsWrapper>
-          <ViewActionButton href={`/admin/agenda/${row.original.id}`} />
-          <EditActionButton href={`/admin/agenda/${row.original.id}/edit`} />
+          <ViewActionButton href={`/dashboard/agenda/${row.original.id}`} />
+          <EditActionButton
+            href={`/dashboard/agenda/${row.original.id}/edit`}
+          />
           <RemoveActionButton onRemove={() => deleteAgenda(row.original.id)} />
         </ActionButtonsWrapper>
       );

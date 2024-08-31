@@ -3,12 +3,17 @@ import path from "path";
 import { writeFile } from "fs/promises";
 import prisma from "@/lib/db";
 import { auth } from "@/auth";
+import { Role } from "@prisma/client";
 
 export const POST = async (req: NextRequest) => {
   try {
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session?.user.role !== Role.ADMIN) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const formData = await req.formData();

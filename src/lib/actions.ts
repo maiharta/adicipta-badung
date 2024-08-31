@@ -2,17 +2,18 @@
 
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-import { agendaFormSchema, loginFormSchema } from "./schemas";
+import { agendaFormSchema, loginFormSchema, userFormSchema } from "./schemas";
 import { z } from "zod";
 import prisma from "./db";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcrypt";
 
 export const login = async (values: z.infer<typeof loginFormSchema>) => {
   try {
     const data = await signIn("credentials", {
       ...values,
-      redirectTo: "/admin",
+      redirectTo: "/dashboard",
     });
     return {
       data,
@@ -65,7 +66,7 @@ export async function createAgenda(values: z.infer<typeof agendaFormSchema>) {
     };
   }
 
-  redirect("/admin/agenda");
+  redirect("/dashboard/agenda");
 }
 
 export async function deleteAgenda(id: number) {
@@ -81,7 +82,7 @@ export async function deleteAgenda(id: number) {
     };
   }
 
-  revalidatePath("/admin/agenda");
+  revalidatePath("/dashboard/agenda");
 }
 
 export async function updateAgenda(
@@ -117,5 +118,67 @@ export async function updateAgenda(
     };
   }
 
-  redirect("/admin/agenda");
+  redirect("/dashboard/agenda");
+}
+
+export async function createUser(values: z.infer<typeof userFormSchema>) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        username: values.username,
+      },
+    });
+
+    if (user)
+      return {
+        error: "Username sudah digunakan.",
+      };
+
+    await prisma.user.create({
+      data: {
+        username: values.username,
+        password: await bcrypt.hash(values.password, 10),
+        role: values.role,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Terjadi kesalahan.",
+    };
+  }
+
+  redirect("/dashboard/user");
+}
+
+export async function updateUser(
+  id: number,
+  values: z.infer<typeof userFormSchema>
+) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        username: values.username,
+      },
+    });
+
+    if (!user)
+      return {
+        error: "Username tidak ditemukan.",
+      };
+
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        role: values.role,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Terjadi kesalahan.",
+    };
+  }
+
+  redirect("/dashboard/user");
 }
