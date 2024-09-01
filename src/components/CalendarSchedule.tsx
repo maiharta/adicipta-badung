@@ -13,7 +13,7 @@ import { cn, formatDateToLocal } from "@/lib/utils";
 import { FileItem } from "./FileItem";
 import { Event as IEvent, MyEvent } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
-import { MobileEventDialog } from "./MobileEventDialog";
+import { MobileListEvent } from "./MobileListEvent";
 
 const localizer = momentLocalizer(moment);
 
@@ -43,7 +43,6 @@ export const CalendarSchedule = ({
   const [myEvent, setMyEvent] = useState<MyEvent[]>([]);
   const [myEventSelected, setMyEventSelected] = useState<MyEvent>();
   const [open, setOpen] = useState(false);
-  const [open1, setOpen1] = useState(false);
 
   const getEventsForDate = (date: moment.Moment): MyEvent[] => {
     return events.filter((event) =>
@@ -57,11 +56,6 @@ export const CalendarSchedule = ({
 
     setSelectedDate(start);
     setMyEvent(eventsOnSelectedDate);
-
-    if (isMobile && eventsOnSelectedDate.length > 0) {
-      console.log(start.toDateString(), eventsOnSelectedDate);
-      setOpen1(true);
-    }
   };
 
   const dateCellClassName = (date: Date) => {
@@ -77,7 +71,6 @@ export const CalendarSchedule = ({
 
   useEffect(() => {
     setOpen(false);
-    setOpen1(false);
   }, [isMobile]);
 
   return (
@@ -194,11 +187,7 @@ export const CalendarSchedule = ({
           </div>
         </ScrollArea>
       </div>
-      <MobileEventDialog
-        events={myEvent}
-        open={open1}
-        onOpenChange={setOpen1}
-      />
+      {myEvent && <MobileListEvent events={myEvent} />}
       <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
         <DialogContent>
           {myEventSelected ? (
