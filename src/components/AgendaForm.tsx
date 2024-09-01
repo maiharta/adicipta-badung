@@ -209,7 +209,7 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
           name="coordinator"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Koordinator (Opsional)</FormLabel>
+              <FormLabel>Nama Penganggung Jawab (Opsional)</FormLabel>
               <FormControl>
                 <Input {...field} disabled={mode === "view"} />
               </FormControl>
@@ -222,7 +222,7 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
           name="coordinatorPhoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>No. Telepon Koordinator (Opsional)</FormLabel>
+              <FormLabel>No. Telepon Penanggung Jawab (Opsional)</FormLabel>
               <FormControl>
                 <Input {...field} disabled={mode === "view"} />
               </FormControl>
@@ -297,11 +297,7 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting
-              ? "Loading..."
-              : mode === "create"
-              ? "Tambah"
-              : "Edit"}
+            {form.formState.isSubmitting ? "Loading..." : "Simpan"}
           </Button>
         )}
       </form>

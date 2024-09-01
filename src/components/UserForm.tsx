@@ -140,11 +140,7 @@ export const UserForm = ({ mode, user }: UserFormProps) => {
             className="w-full"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting
-              ? "Loading..."
-              : mode === "create"
-              ? "Tambah"
-              : "Edit"}
+            {form.formState.isSubmitting ? "Loading..." : "Simpan"}
           </Button>
         )}
       </form>
