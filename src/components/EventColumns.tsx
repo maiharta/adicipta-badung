@@ -74,7 +74,7 @@ export const columns: ColumnDef<Event>[] = [
         title="No. Telepon Penanggung Jawab"
       />
     ),
-    cell: ({ row }) => row.original.coordinator || "-",
+    cell: ({ row }) => row.original.coordinatorPhoneNumber || "-",
   },
   {
     id: "actions",
