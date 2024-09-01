@@ -8,22 +8,12 @@ import { useEffect, useState } from "react";
 import { LuCalendarDays, LuMapPin, LuTimer } from "react-icons/lu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { File } from "@prisma/client";
 import { Label } from "./ui/label";
-import { formatDateToLocal } from "@/lib/utils";
+import { cn, formatDateToLocal } from "@/lib/utils";
 import { FileItem } from "./FileItem";
-import { Event as IEvent } from "@/lib/definitions";
-
-interface MyEvent extends Event {
-  description?: string | null;
-  location: string;
-  startTime: string;
-  endTime: string;
-  code: string;
-  coordinator?: string | null;
-  coordinatorPhoneNumber?: string | null;
-  attachments: File[];
-}
+import { Event as IEvent, MyEvent } from "@/lib/definitions";
+import { useMediaQuery } from "react-responsive";
+import { MobileEventDialog } from "./MobileEventDialog";
 
 const localizer = momentLocalizer(moment);
 
@@ -33,6 +23,7 @@ export const CalendarSchedule = ({
   prismaEvents: IEvent[];
 }) => {
   const events = prismaEvents.map<MyEvent>((event) => ({
+    id: event.id,
     title: event.title,
     start: event.startDate,
     end: event.startDate,
@@ -45,11 +36,14 @@ export const CalendarSchedule = ({
     coordinatorPhoneNumber: event.coordinatorPhoneNumber,
     attachments: event.attachments,
   }));
+
+  const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
   const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [myEvent, setMyEvent] = useState<MyEvent[]>([]);
   const [myEventSelected, setMyEventSelected] = useState<MyEvent>();
   const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
 
   const getEventsForDate = (date: moment.Moment): MyEvent[] => {
     return events.filter((event) =>
@@ -63,11 +57,16 @@ export const CalendarSchedule = ({
 
     setSelectedDate(start);
     setMyEvent(eventsOnSelectedDate);
+
+    if (isMobile && eventsOnSelectedDate.length > 0) {
+      console.log(start.toDateString(), eventsOnSelectedDate);
+      setOpen1(true);
+    }
   };
 
   const dateCellClassName = (date: Date) => {
     if (selectedDate && moment(date).isSame(selectedDate, "day")) {
-      return "bg-secondary text-white"; // Tailwind classes
+      return "bg-secondary text-white";
     }
     return "";
   };
@@ -75,6 +74,11 @@ export const CalendarSchedule = ({
   useEffect(() => {
     handleSelectSlot({ start: selectedDate });
   }, []);
+
+  useEffect(() => {
+    setOpen(false);
+    setOpen1(false);
+  }, [isMobile]);
 
   return (
     <div className="flex flex-col gap-4 lg:h-screen">
@@ -86,7 +90,7 @@ export const CalendarSchedule = ({
           className="mx-auto"
         /> */}
       <div className="lg:flex-1 lg:h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="h-[600px] lg:h-auto lg:col-span-2 bg-white p-4 rounded-xl">
+        <div className="h-[400px] sm:h-[600px] lg:h-auto lg:col-span-2 bg-white p-4 rounded-xl">
           <Calendar
             localizer={localizer}
             events={events}
@@ -104,7 +108,7 @@ export const CalendarSchedule = ({
             }}
             eventPropGetter={() => {
               return {
-                className: "bg-primary text-xs lg:text-sm",
+                className: "hidden sm:block bg-primary text-xs lg:text-sm",
               };
             }}
             selectable
@@ -124,10 +128,29 @@ export const CalendarSchedule = ({
                   {children}
                 </div>
               ),
+              month: {
+                dateHeader: ({ date }) => {
+                  const eventsForDate = events.filter((e) =>
+                    moment(e.start).isSame(date, "day")
+                  );
+
+                  return (
+                    <div
+                      className={cn(
+                        "m-1 ms-auto w-5 h-5 flex items-center justify-center rounded-full text-xs",
+                        eventsForDate.length > 0 &&
+                          "bg-primary sm:bg-transparent text-white sm:text-black"
+                      )}
+                    >
+                      {date.getDate()}
+                    </div>
+                  );
+                },
+              },
             }}
           />
         </div>
-        <ScrollArea>
+        <ScrollArea className="hidden sm:block">
           <div className="bg-white p-4 rounded-xl">
             <div>
               <p className="text-xl font-semibold">Daftar Agenda</p>
@@ -170,6 +193,11 @@ export const CalendarSchedule = ({
           </div>
         </ScrollArea>
       </div>
+      <MobileEventDialog
+        events={myEvent}
+        open={open1}
+        onOpenChange={setOpen1}
+      />
       <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
         <DialogContent>
           {myEventSelected ? (
@@ -197,12 +225,6 @@ export const CalendarSchedule = ({
                 <Label>Keterangan</Label>
                 <p className="text-sm text-muted-foreground">
                   {myEventSelected.description || "-"}
-                </p>
-              </div>
-              <div>
-                <Label>Kode</Label>
-                <p className="text-sm text-muted-foreground">
-                  {myEventSelected.code}
                 </p>
               </div>
               <div>

@@ -10,10 +10,12 @@ import {
 import { LuLogOut } from "react-icons/lu";
 import { logout } from "@/lib/actions";
 import { Session } from "next-auth";
+import { Drawer } from "./Drawer";
 
 const Navbar = ({ session }: { session: Session | null }) => {
   return (
     <div className="flex items-center justify-between bg-white p-4 rounded-md">
+      <Drawer session={session} />
       {/* ICONS AND USER */}
       <div className="flex items-center gap-2 justify-end w-full">
         <div className="flex flex-col">

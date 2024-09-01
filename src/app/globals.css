@@ -67,3 +67,13 @@
     @apply bg-[#F7F8FA] text-foreground;
   }
 }
+
+.rbc-show-more {
+  display: none !important;
+}
+
+@media (min-width: 640px) {
+  .rbc-show-more {
+    display: block !important;
+  }
+}

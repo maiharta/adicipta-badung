@@ -50,13 +50,13 @@ const Menu = ({ session }: { session: Session | null }) => {
                   href={item.href}
                   key={item.label}
                   className={cn(
-                    "flex items-center justify-center lg:justify-start gap-4 text-muted-foreground py-2 md:px-2 rounded-md hover:bg-primary hover:text-primary-foreground",
+                    "flex items-center sm:justify-center lg:justify-start gap-4 text-muted-foreground py-2 px-2 rounded-md hover:bg-primary hover:text-primary-foreground",
                     pathname === item.href &&
                       "bg-primary text-primary-foreground"
                   )}
                 >
                   {item.icon}
-                  <span className="hidden lg:block">{item.label}</span>
+                  <span className="sm:hidden lg:block">{item.label}</span>
                 </Link>
               );
             }
