@@ -46,13 +46,13 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
     defaultValues: {
       title: event?.title ?? "",
       location: event?.location ?? "",
-      description: event?.description ?? "",
+      description: event?.description ?? undefined,
       date: event?.startDate,
       startTime: event?.startTime ?? "",
       endTime: event?.endTime ?? "",
       code: event?.code ?? "",
-      coordinator: event?.coordinator ?? "",
-      coordinatorPhoneNumber: event?.coordinatorPhoneNumber ?? "",
+      coordinator: event?.coordinator ?? undefined,
+      coordinatorPhoneNumber: event?.coordinatorPhoneNumber ?? undefined,
       attachments: event?.attachments.map((atachment) => atachment.id),
     },
   });
@@ -107,7 +107,7 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Keterangan</FormLabel>
+              <FormLabel>Keterangan (Opsional)</FormLabel>
               <FormControl>
                 <Textarea {...field} disabled={mode === "view"} />
               </FormControl>

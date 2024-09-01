@@ -15,7 +15,7 @@ import { FileItem } from "./FileItem";
 import { Event as IEvent } from "@/lib/definitions";
 
 interface MyEvent extends Event {
-  description: string;
+  description?: string | null;
   location: string;
   startTime: string;
   endTime: string;
@@ -196,7 +196,7 @@ export const CalendarSchedule = ({
               <div>
                 <Label>Keterangan</Label>
                 <p className="text-sm text-muted-foreground">
-                  {myEventSelected.description}
+                  {myEventSelected.description || "-"}
                 </p>
               </div>
               <div>
