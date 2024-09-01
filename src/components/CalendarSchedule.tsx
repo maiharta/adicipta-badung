@@ -148,17 +148,17 @@ export const CalendarSchedule = ({
                       <p className="font-semibold">{event.title}</p>
                       <div className="flex items-center gap-1 text-gray-600">
                         <LuMapPin size={14} />
-                        <p className="text-sm">{event.location}</p>
+                        <p className="flex-1 text-sm">{event.location}</p>
                       </div>
                       <div className="flex items-center gap-1 text-gray-600">
                         <LuCalendarDays size={14} />
-                        <p className="text-sm">
+                        <p className="flex-1 text-sm">
                           {formatDateToLocal(event.start?.toDateString() ?? "")}
                         </p>
                       </div>
                       <div className="flex items-center gap-1 text-gray-600">
                         <LuTimer size={14} />
-                        <p className="text-sm">{`${event.startTime} - ${event.endTime}`}</p>
+                        <p className="flex-1 text-sm">{`${event.startTime} - ${event.endTime}`}</p>
                       </div>
                     </div>
                   </div>
@@ -178,11 +178,11 @@ export const CalendarSchedule = ({
                 <p className="text-2xl font-bold">{myEventSelected.title}</p>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <LuMapPin size={14} />
-                  <p className="text-sm">{myEventSelected.location}</p>
+                  <p className="flex-1 text-sm">{myEventSelected.location}</p>
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <LuCalendarDays size={14} />
-                  <p className="text-sm">
+                  <p className="flex-1 text-sm">
                     {formatDateToLocal(
                       myEventSelected.start?.toDateString() ?? ""
                     )}
@@ -190,7 +190,7 @@ export const CalendarSchedule = ({
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <LuTimer size={14} />
-                  <p className="text-sm">{`${myEventSelected.startTime} - ${myEventSelected.endTime}`}</p>
+                  <p className="flex-1 text-sm">{`${myEventSelected.startTime} - ${myEventSelected.endTime}`}</p>
                 </div>
               </div>
               <div>
