@@ -26,7 +26,7 @@ export const MobileEventDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-screen sm:h-auto overflow-auto">
+      <DialogContent className="h-dvh sm:h-auto overflow-auto">
         <div className="space-y-4">
           {events.map((event, i) => (
             <div

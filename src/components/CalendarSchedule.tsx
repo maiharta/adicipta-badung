@@ -118,6 +118,7 @@ export const CalendarSchedule = ({
               setMyEventSelected(event);
               setOpen(true);
             }}
+            longPressThreshold={10}
             components={{
               dateCellWrapper: ({ children, value }) => (
                 <div
