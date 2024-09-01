@@ -63,7 +63,7 @@ export const columns: ColumnDef<Event>[] = [
   {
     accessorKey: "coordinator",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Koordinator" />
+      <DataTableColumnHeader column={column} title="Nama Penanggung Jawab" />
     ),
     cell: ({ row }) => row.original.coordinator || "-",
   },
