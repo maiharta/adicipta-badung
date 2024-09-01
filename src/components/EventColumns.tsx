@@ -55,15 +55,19 @@ export const columns: ColumnDef<Event>[] = [
     },
   },
   {
-    accessorKey: "code",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kode" />
-    ),
-  },
-  {
     accessorKey: "coordinator",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Penanggung Jawab" />
+    ),
+    cell: ({ row }) => row.original.coordinator || "-",
+  },
+  {
+    accessorKey: "coordinatorPhoneNumber",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="No. Telepon Penanggung Jawab"
+      />
     ),
     cell: ({ row }) => row.original.coordinator || "-",
   },
