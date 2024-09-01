@@ -206,13 +206,13 @@ export const CalendarSchedule = ({
                 </p>
               </div>
               <div>
-                <Label>Koordinator</Label>
+                <Label>Nama Penanggung Jawab</Label>
                 <p className="text-sm text-muted-foreground">
                   {myEventSelected.coordinator || "-"}
                 </p>
               </div>
               <div>
-                <Label>No. Telepon Koordinator</Label>
+                <Label>No. Telepon Penanggung Jawab</Label>
                 <p className="text-sm text-muted-foreground">
                   {myEventSelected.coordinatorPhoneNumber || "-"}
                 </p>
