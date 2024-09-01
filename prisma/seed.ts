@@ -14,6 +14,20 @@ async function main() {
     update: {},
   });
 
+  await prisma.participant.createMany({
+    data: [
+      {
+        id: 1,
+        name: "Adi Arnawa",
+      },
+      {
+        id: 2,
+        name: "Alit Sucipta",
+      },
+    ],
+    skipDuplicates: true,
+  });
+
   console.log(user);
 }
 main()

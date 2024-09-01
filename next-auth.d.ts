@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "@/lib/definitions";
 import NextAuth from "next-auth";
 import { JWT } from "next-auth/jwt";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { LuFile, LuTrash2 } from "react-icons/lu";
 import { Button } from "./ui/button";
-import { File } from "@prisma/client";
+import { File } from "@/lib/definitions";
 
 type FileItemProps =
   | {

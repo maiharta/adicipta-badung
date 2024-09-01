@@ -25,20 +25,21 @@ model User {
 }
 
 model Event {
-  id                     Int      @id @default(autoincrement())
+  id                     Int           @id @default(autoincrement())
   title                  String
   location               String
-  startDate              DateTime @map("start_date")
-  endDate                DateTime @map("end_date")
-  startTime              String   @map("start_time")
-  endTime                String   @map("end_time")
+  startDate              DateTime      @map("start_date")
+  endDate                DateTime      @map("end_date")
+  startTime              String        @map("start_time")
+  endTime                String        @map("end_time")
   description            String?
   code                   String
   coordinator            String?
-  coordinatorPhoneNumber String?  @map("coordinator_phone_number")
+  coordinatorPhoneNumber String?       @map("coordinator_phone_number")
   attachments            File[]
-  createdAt              DateTime @default(now()) @map("created_at")
-  updatedAt              DateTime @updatedAt @map("updated_at")
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+  participants           Participant[]
 
   @@map("events")
 }
@@ -54,4 +55,14 @@ model File {
   eventId   Int?     @map("event_id")
 
   @@map("files")
+}
+
+model Participant {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  events    Event[]
+
+  @@map("participants")
 }

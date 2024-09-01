@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   LuArrowDownCircle,
   LuArrowUpCircle,
+  LuBadgeCheck,
   LuCalendarDays,
   LuMapPin,
   LuTimer,
@@ -41,6 +42,24 @@ export const MobileListEvent = ({ events }: { events: MyEvent[] }) => {
             </div>
             {event.id === eventOpen && (
               <div className="mt-4">
+                <div>
+                  <Label className="text-sm">Kehadiran</Label>
+                  {event.participants.length > 0 ? (
+                    event.participants.map((participant) => (
+                      <div
+                        key={participant.id}
+                        className="flex items-center gap-1"
+                      >
+                        <LuBadgeCheck className="text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          {participant.name}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>-</p>
+                  )}
+                </div>
                 <div>
                   <Label className="text-sm">Keterangan</Label>
                   <p className="text-sm text-muted-foreground">

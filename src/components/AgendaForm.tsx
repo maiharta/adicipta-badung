@@ -22,31 +22,36 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { formatDateToLocal } from "@/lib/utils";
 import { agendaFormSchema } from "@/lib/schemas";
 import { createAgenda, updateAgenda } from "@/lib/actions";
-import { File } from "@prisma/client";
 import { FileItem } from "./FileItem";
-import { Event } from "@/lib/definitions";
+import { Event, File, Participant } from "@/lib/definitions";
+import { Checkbox } from "./ui/checkbox";
 
 type AgendaFormProps =
   | {
       mode: "create";
+      participants: Participant[];
       event?: Event;
     }
   | {
       mode: "edit";
+      participants: Participant[];
       event: Event;
     }
   | {
       mode: "view";
+      participants: Participant[];
       event: Event;
     };
 
-export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
+export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
   const form = useForm<z.infer<typeof agendaFormSchema>>({
     resolver: zodResolver(agendaFormSchema),
     defaultValues: {
       title: event?.title ?? "",
       location: event?.location ?? "",
       description: event?.description ?? undefined,
+      participants:
+        event?.participants.map((participant) => participant.id) ?? [],
       date: event?.startDate,
       startTime: event?.startTime ?? "",
       endTime: event?.endTime ?? "",
@@ -111,6 +116,55 @@ export const AgendaForm = ({ mode, event }: AgendaFormProps) => {
               <FormControl>
                 <Textarea {...field} disabled={mode === "view"} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="participants"
+          render={() => (
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel>Kehadiran</FormLabel>
+              </div>
+              {participants.map((participant) => (
+                <FormField
+                  key={participant.id}
+                  control={form.control}
+                  name="participants"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={participant.id}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(participant.id)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([
+                                    ...field.value,
+                                    participant.id,
+                                  ])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== participant.id
+                                    )
+                                  );
+                            }}
+                            disabled={mode === "view"}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {participant.name}
+                        </FormLabel>
+                      </FormItem>
+                    );
+                  }}
+                />
+              ))}
               <FormMessage />
             </FormItem>
           )}

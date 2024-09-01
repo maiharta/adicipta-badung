@@ -1,10 +1,12 @@
 import { AgendaForm } from "@/components/AgendaForm";
-import { getEventById } from "@/lib/data";
+import { getEventById, getParticipants } from "@/lib/data";
 import { notFound } from "next/navigation";
-import React from "react";
 
 const EditAgendaPage = async ({ params }: { params: { id: string } }) => {
-  const event = await getEventById(+params.id);
+  const [participants, event] = await Promise.all([
+    getParticipants(),
+    getEventById(+params.id),
+  ]);
 
   if (!event) {
     return notFound();
@@ -15,7 +17,7 @@ const EditAgendaPage = async ({ params }: { params: { id: string } }) => {
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">Edit Agenda</h1>
       </div>
-      <AgendaForm mode="edit" event={event} />
+      <AgendaForm mode="edit" event={event} participants={participants} />
     </div>
   );
 };

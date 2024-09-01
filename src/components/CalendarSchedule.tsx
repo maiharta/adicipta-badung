@@ -5,7 +5,12 @@ import moment from "moment";
 import "moment/locale/id";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
-import { LuCalendarDays, LuMapPin, LuTimer } from "react-icons/lu";
+import {
+  LuBadgeCheck,
+  LuCalendarDays,
+  LuMapPin,
+  LuTimer,
+} from "react-icons/lu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "./ui/label";
@@ -28,6 +33,7 @@ export const CalendarSchedule = ({
     start: event.startDate,
     end: event.startDate,
     description: event.description,
+    participants: event.participants,
     location: event.location,
     startTime: event.startTime,
     endTime: event.endTime,
@@ -210,6 +216,24 @@ export const CalendarSchedule = ({
                   <LuTimer size={14} />
                   <p className="flex-1 text-sm">{`${myEventSelected.startTime} - ${myEventSelected.endTime}`}</p>
                 </div>
+              </div>
+              <div>
+                <Label>Kehadiran</Label>
+                {myEventSelected.participants.length > 0 ? (
+                  myEventSelected.participants.map((participant) => (
+                    <div
+                      key={participant.id}
+                      className="flex items-center gap-1"
+                    >
+                      <LuBadgeCheck className="text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">
+                        {participant.name}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>-</p>
+                )}
               </div>
               <div>
                 <Label>Keterangan</Label>

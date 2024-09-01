@@ -12,6 +12,7 @@ export const getEvents = async () => {
       },
     ],
     include: {
+      participants: true,
       attachments: true,
     },
   });
@@ -25,6 +26,7 @@ export const getEventById = async (id: number) => {
       id,
     },
     include: {
+      participants: true,
       attachments: true,
     },
   });
@@ -60,4 +62,10 @@ export const getUserById = async (id: number) => {
   });
 
   return user;
+};
+
+export const getParticipants = async () => {
+  const participants = await prisma.participant.findMany();
+
+  return participants;
 };
