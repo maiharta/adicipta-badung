@@ -3,6 +3,14 @@ import prisma from "./db";
 
 export const getEvents = async () => {
   const events = await prisma.event.findMany({
+    orderBy: [
+      {
+        startDate: "asc",
+      },
+      {
+        startTime: "asc",
+      },
+    ],
     include: {
       attachments: true,
     },

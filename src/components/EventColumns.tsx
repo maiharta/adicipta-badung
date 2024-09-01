@@ -44,6 +44,11 @@ export const columns: ColumnDef<Event>[] = [
     cell: ({ row }) => {
       return formatDateToLocal(row.original.startDate.toDateString());
     },
+    sortingFn: (rowA, rowB) => {
+      return (
+        rowA.original.startDate.getTime() - rowB.original.startDate.getTime()
+      );
+    },
   },
   {
     id: "time",
