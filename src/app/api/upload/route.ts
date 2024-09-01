@@ -27,9 +27,9 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    if (file.type !== "application/pdf") {
+    if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Please upload a PDF document." },
+        { error: "Invalid file type. Please upload a PDF or image file." },
         { status: 400 }
       );
     }

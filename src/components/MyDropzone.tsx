@@ -17,18 +17,19 @@ export const MyDropzone = ({
       fileRejections.forEach((file) => {
         file.errors.forEach((err) => {
           if (err.code === "file-too-large") {
-            toast("Maksimal size file 5MB");
+            toast("Maksimal size file 5MB.");
           }
 
           if (err.code === "file-invalid-type") {
-            toast("File harus pdf");
+            toast("File harus pdf atau gambar.");
           }
         });
       });
     },
     multiple: false,
     accept: {
-      "application/pdf": [".pdf"],
+      "image/*": [],
+      "application/pdf": [],
     },
     maxSize: 1000 * 1000 * 5,
   });
