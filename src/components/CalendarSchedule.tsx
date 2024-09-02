@@ -167,7 +167,7 @@ export const CalendarSchedule = ({
                     className="flex border rounded-md overflow-hidden cursor-pointer"
                   >
                     <div className="w-2 bg-red-500"></div>
-                    <div className="p-2">
+                    <div className=" flex-1 p-2">
                       <p className="font-semibold">{event.title}</p>
                       <div className="flex items-center gap-1 text-gray-600">
                         <LuMapPin size={14} />
