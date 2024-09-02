@@ -1,5 +1,5 @@
 import { MyEvent } from "@/lib/definitions";
-import { formatDateToLocal } from "@/lib/utils";
+import { formatDateToLocal, joinEventLocation } from "@/lib/utils";
 import { useState } from "react";
 import {
   LuArrowDownCircle,
@@ -28,7 +28,7 @@ export const MobileListEvent = ({ events }: { events: MyEvent[] }) => {
             <p className="font-semibold">{event.title}</p>
             <div className="flex items-center gap-1 text-gray-600">
               <LuMapPin size={14} />
-              <p className="flex-1 text-sm">{event.location}</p>
+              <p className="flex-1 text-sm">{joinEventLocation(event)}</p>
             </div>
             <div className="flex items-center gap-1 text-gray-600">
               <LuCalendarDays size={14} />

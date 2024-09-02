@@ -14,7 +14,7 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "./ui/label";
-import { cn, formatDateToLocal } from "@/lib/utils";
+import { cn, formatDateToLocal, joinEventLocation } from "@/lib/utils";
 import { FileItem } from "./FileItem";
 import { Event as IEvent, MyEvent } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
@@ -35,6 +35,7 @@ export const CalendarSchedule = ({
     description: event.description,
     participants: event.participants,
     participantNotes: event.participantNotes,
+    neighborhood: event.neighborhood,
     location: event.location,
     startTime: event.startTime,
     endTime: event.endTime,
@@ -172,7 +173,9 @@ export const CalendarSchedule = ({
                       <p className="font-semibold">{event.title}</p>
                       <div className="flex items-center gap-1 text-gray-600">
                         <LuMapPin size={14} />
-                        <p className="flex-1 text-sm">{event.location}</p>
+                        <p className="flex-1 text-sm">
+                          {joinEventLocation(event)}
+                        </p>
                       </div>
                       <div className="flex items-center gap-1 text-gray-600">
                         <LuCalendarDays size={14} />
@@ -203,7 +206,9 @@ export const CalendarSchedule = ({
                 <p className="text-2xl font-bold">{myEventSelected.title}</p>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <LuMapPin size={14} />
-                  <p className="flex-1 text-sm">{myEventSelected.location}</p>
+                  <p className="flex-1 text-sm">
+                    {joinEventLocation(myEventSelected)}
+                  </p>
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <LuCalendarDays size={14} />

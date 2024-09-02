@@ -19,34 +19,104 @@ import { Textarea } from "./ui/textarea";
 import { MyDropzone } from "./MyDropzone";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { formatDateToLocal } from "@/lib/utils";
+import { cn, formatDateToLocal } from "@/lib/utils";
 import { agendaFormSchema } from "@/lib/schemas";
 import { createAgenda, updateAgenda } from "@/lib/actions";
 import { FileItem } from "./FileItem";
-import { Event, File, Participant } from "@/lib/definitions";
+import {
+  District,
+  Event,
+  File,
+  Neighborhood,
+  Participant,
+  Village,
+} from "@/lib/definitions";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
 
 type AgendaFormProps =
   | {
       mode: "create";
       participants: Participant[];
+      districts: District[];
+      villages: Village[];
+      neighborhoods: Neighborhood[];
       event?: Event;
     }
   | {
       mode: "edit";
       participants: Participant[];
+      districts: District[];
+      villages: Village[];
+      neighborhoods: Neighborhood[];
       event: Event;
     }
   | {
       mode: "view";
       participants: Participant[];
+      districts: District[];
+      villages: Village[];
+      neighborhoods?: Neighborhood[];
       event: Event;
     };
 
-export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
+export const AgendaForm = ({
+  mode,
+  participants,
+  districts,
+  villages,
+  neighborhoods,
+  event,
+}: AgendaFormProps) => {
   const form = useForm<z.infer<typeof agendaFormSchema>>({
-    resolver: zodResolver(agendaFormSchema),
+    resolver: zodResolver(
+      agendaFormSchema.superRefine((data, ctx) => {
+        if (
+          showParticipantNotes &&
+          (!data.participantNotes ||
+            (data.participantNotes && data.participantNotes?.length < 1))
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["participantNotes"],
+            message: "Perwakilan tidak boleh kosong.",
+          });
+        }
+
+        if (!isOutsideBadung) {
+          if (!data.districtId) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["districtId"],
+              message: "Kecamatan tidak boleh kosong.",
+            });
+          }
+          if (!data.villageId) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["villageId"],
+              message: "Desa tidak boleh kosong.",
+            });
+          }
+          if (!data.neighborhoodId) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["neighborhoodId"],
+              message: "Banjar tidak boleh kosong.",
+            });
+          }
+        }
+      })
+    ),
     defaultValues: {
       title: event?.title ?? "",
       location: event?.location ?? "",
@@ -54,6 +124,9 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
       participants:
         event?.participants.map((participant) => participant.id) ?? [],
       participantNotes: event?.participantNotes ?? undefined,
+      districtId: event?.neighborhood?.village.districtId,
+      villageId: event?.neighborhood?.villageId,
+      neighborhoodId: event?.neighborhoodId ?? undefined,
       date: event?.startDate,
       startTime: event?.startTime ?? "",
       endTime: event?.endTime ?? "",
@@ -68,11 +141,19 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
   const [showParticipantNotes, setShowParticipantNotes] = useState(
     !!event?.participantNotes
   );
+  const [isOutsideBadung, setIsOutsideBadung] = useState(
+    mode === "create" ? false : !event?.neighborhood
+  );
 
-  async function onSubmit(values: z.infer<typeof agendaFormSchema>) {
+  const onSubmit = async (values: z.infer<typeof agendaFormSchema>) => {
     const newValues: z.infer<typeof agendaFormSchema> = {
       ...values,
       ...(!showParticipantNotes && { participantNotes: undefined }),
+      ...(isOutsideBadung && {
+        districtId: undefined,
+        villageId: undefined,
+        neighborhoodId: undefined,
+      }),
     };
     if (mode === "create") {
       const { error } = (await createAgenda(newValues)) || {};
@@ -89,7 +170,7 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
         toast.error(error);
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (mode === "edit" || mode === "view") {
@@ -209,19 +290,263 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lokasi</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={mode === "view"} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <fieldset className="grid gap-6 rounded-lg border p-4">
+          <legend className="-ml-1 px-1 text-sm font-medium">Alamat</legend>
+          <div className="flex flex-row items-start space-x-3 space-y-0">
+            <Checkbox
+              id="isOutsideBadung"
+              checked={isOutsideBadung}
+              onCheckedChange={(checked) => setIsOutsideBadung(!!checked)}
+              disabled={mode === "view"}
+            />
+            <Label htmlFor="isOutsideBadung" className="font-normal">
+              Luar Badung
+            </Label>
+          </div>
+          {!isOutsideBadung && (
+            <>
+              {/* District */}
+              <FormField
+                control={form.control}
+                name="districtId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Kecamatan</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                            disabled={mode === "view"}
+                          >
+                            {field.value
+                              ? districts?.find(
+                                  (district) => district.id === field.value
+                                )?.name
+                              : "Pilih kecamatan"}
+                            <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" className="p-0">
+                        <Command>
+                          <CommandInput placeholder="Cari kecamatan..." />
+                          <CommandList>
+                            <CommandEmpty>
+                              Kecamatan tidak ditemukan.
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {districts?.map((district) => (
+                                <CommandItem
+                                  value={district.name}
+                                  key={district.id}
+                                  onSelect={() => {
+                                    form.setValue("districtId", district.id);
+                                    form.setValue("villageId", 0);
+                                    form.setValue("neighborhoodId", 0);
+                                  }}
+                                >
+                                  <LuCheck
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      district.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {district.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Village */}
+              <FormField
+                control={form.control}
+                name="villageId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Desa</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                            disabled={mode === "view"}
+                          >
+                            {field.value
+                              ? villages?.find(
+                                  (village) => village.id === field.value
+                                )?.name
+                              : "Pilih desa"}
+                            <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" className="p-0">
+                        <Command>
+                          <CommandInput placeholder="Cari desa..." />
+                          <CommandList>
+                            <CommandEmpty>Desa tidak ditemukan.</CommandEmpty>
+                            <CommandGroup>
+                              {villages
+                                ?.filter((village) => {
+                                  const districtId = form.watch("districtId");
+                                  if (!districtId) return true;
+                                  return village.districtId === districtId;
+                                })
+                                .map((village) => (
+                                  <CommandItem
+                                    value={village.name}
+                                    key={village.id}
+                                    onSelect={() => {
+                                      form.setValue(
+                                        "districtId",
+                                        village.districtId
+                                      );
+                                      form.setValue("villageId", village.id);
+                                      form.setValue("neighborhoodId", 0);
+                                    }}
+                                  >
+                                    <LuCheck
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        village.id === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {village.name}
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Neighborhood */}
+              <FormField
+                control={form.control}
+                name="neighborhoodId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Banjar</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                            disabled={mode === "view"}
+                          >
+                            {field.value
+                              ? neighborhoods?.find(
+                                  (neighborhood) =>
+                                    neighborhood.id === field.value
+                                )?.name
+                              : "Pilih banjar"}
+                            <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" className="p-0">
+                        <Command>
+                          <CommandInput placeholder="Cari kecamatan..." />
+                          <CommandList>
+                            <CommandEmpty>Banjar tidak ditemukan.</CommandEmpty>
+                            <CommandGroup>
+                              {neighborhoods
+                                ?.filter((neighborhood) => {
+                                  const districtId = form.watch("districtId");
+                                  const villageId = form.watch("villageId");
+                                  if (!districtId && !villageId) return true;
+                                  if (villageId)
+                                    return neighborhood.villageId === villageId;
+                                  return (
+                                    neighborhood.village.districtId ===
+                                    districtId
+                                  );
+                                })
+                                .map((neighborhood) => (
+                                  <CommandItem
+                                    value={neighborhood.name}
+                                    key={neighborhood.id}
+                                    onSelect={() => {
+                                      form.setValue(
+                                        "districtId",
+                                        neighborhood.village.districtId
+                                      );
+                                      form.setValue(
+                                        "villageId",
+                                        neighborhood.villageId
+                                      );
+                                      form.setValue(
+                                        "neighborhoodId",
+                                        neighborhood.id
+                                      );
+                                    }}
+                                  >
+                                    <LuCheck
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        neighborhood.id === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {neighborhood.name}
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
-        />
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Lokasi Acara</FormLabel>
+                <FormControl>
+                  <Textarea {...field} disabled={mode === "view"} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </fieldset>
+
         <FormField
           control={form.control}
           name="date"

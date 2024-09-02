@@ -49,6 +49,13 @@ export async function createAgenda(values: z.infer<typeof agendaFormSchema>) {
           connect: values.participants.map((id) => ({ id })),
         },
         participantNotes: values.participantNotes,
+        ...(values.neighborhoodId && {
+          neighborhood: {
+            connect: {
+              id: values.neighborhoodId,
+            },
+          },
+        }),
         location: values.location,
         startDate: values.date,
         endDate: values.date,
@@ -104,7 +111,22 @@ export async function updateAgenda(
         participants: {
           set: values.participants.map((id) => ({ id })),
         },
-        participantNotes: values.participantNotes || null,
+        participantNotes: values.participantNotes ?? null,
+        ...(values.neighborhoodId
+          ? {
+              neighborhood: {
+                connect: {
+                  id: values.neighborhoodId,
+                },
+              },
+            }
+          : {
+              neighborhood: {
+                disconnect: {
+                  id: values.neighborhoodId,
+                },
+              },
+            }),
         location: values.location,
         startDate: values.date,
         endDate: values.date,

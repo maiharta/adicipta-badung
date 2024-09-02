@@ -13,6 +13,15 @@ export const getEvents = async () => {
     ],
     include: {
       participants: true,
+      neighborhood: {
+        include: {
+          village: {
+            include: {
+              district: true,
+            },
+          },
+        },
+      },
       attachments: true,
     },
   });
@@ -27,6 +36,15 @@ export const getEventById = async (id: number) => {
     },
     include: {
       participants: true,
+      neighborhood: {
+        include: {
+          village: {
+            include: {
+              district: true,
+            },
+          },
+        },
+      },
       attachments: true,
     },
   });
@@ -68,4 +86,34 @@ export const getParticipants = async () => {
   const participants = await prisma.participant.findMany();
 
   return participants;
+};
+
+export const getDistricts = async () => {
+  const districts = await prisma.district.findMany();
+
+  return districts;
+};
+
+export const getVillages = async () => {
+  const villages = await prisma.village.findMany({
+    include: {
+      district: true,
+    },
+  });
+
+  return villages;
+};
+
+export const getNeighborhoods = async () => {
+  const neighborhoods = await prisma.neighborhood.findMany({
+    include: {
+      village: {
+        include: {
+          district: true,
+        },
+      },
+    },
+  });
+
+  return neighborhoods;
 };

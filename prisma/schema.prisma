@@ -27,6 +27,7 @@ model User {
 model Event {
   id                     Int           @id @default(autoincrement())
   title                  String
+  neighborhood           Neighborhood? @relation(fields: [neighborhoodId], references: [id])
   location               String
   startDate              DateTime      @map("start_date")
   endDate                DateTime      @map("end_date")
@@ -41,6 +42,7 @@ model Event {
   updatedAt              DateTime      @updatedAt @map("updated_at")
   participants           Participant[]
   participantNotes       String?       @map("participant_notes")
+  neighborhoodId         Int?          @map("neighborhood_id")
 
   @@map("events")
 }
@@ -66,4 +68,38 @@ model Participant {
   events    Event[]
 
   @@map("participants")
+}
+
+model Neighborhood {
+  id        Int      @id @default(autoincrement())
+  name      String
+  village   Village  @relation(fields: [villageId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  events    Event[]
+  villageId Int      @map("village_id")
+
+  @@map("neighborhoods")
+}
+
+model Village {
+  id            Int            @id @default(autoincrement())
+  name          String
+  district      District       @relation(fields: [districtId], references: [id])
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  neighborhoods Neighborhood[]
+  districtId    Int            @map("district_id")
+
+  @@map("villages")
+}
+
+model District {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  villages  Village[]
+
+  @@map("districts")
 }
