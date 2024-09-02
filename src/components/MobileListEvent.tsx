@@ -60,6 +60,14 @@ export const MobileListEvent = ({ events }: { events: MyEvent[] }) => {
                     <p>-</p>
                   )}
                 </div>
+                {event.participantNotes && (
+                  <div>
+                    <Label className="text-sm">Perwakilan</Label>
+                    <p className="text-sm text-muted-foreground">
+                      {event.participantNotes}
+                    </p>
+                  </div>
+                )}
                 <div>
                   <Label className="text-sm">Keterangan</Label>
                   <p className="text-sm text-muted-foreground">

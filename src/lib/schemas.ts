@@ -9,6 +9,7 @@ export const agendaFormSchema = z.object({
   title: z.string().min(1, "Nama agenda tidak boleh kosong."),
   description: z.string().min(1, "Keterangan tidak boleh kosong.").optional(),
   participants: z.array(z.number()),
+  participantNotes: z.string().min(1).optional(),
   location: z.string().min(1, "Lokasi tidak boleh kosong."),
   date: z.date(),
   startTime: z.string().min(1, "Waktu mulai tidak boleh kosong."),

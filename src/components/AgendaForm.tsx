@@ -25,6 +25,7 @@ import { createAgenda, updateAgenda } from "@/lib/actions";
 import { FileItem } from "./FileItem";
 import { Event, File, Participant } from "@/lib/definitions";
 import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
 
 type AgendaFormProps =
   | {
@@ -52,6 +53,7 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
       description: event?.description ?? undefined,
       participants:
         event?.participants.map((participant) => participant.id) ?? [],
+      participantNotes: event?.participantNotes ?? undefined,
       date: event?.startDate,
       startTime: event?.startTime ?? "",
       endTime: event?.endTime ?? "",
@@ -63,17 +65,24 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
   });
 
   const [attachmentFiles, setAttachmentFiles] = useState<File[]>([]);
+  const [showParticipantNotes, setShowParticipantNotes] = useState(
+    !!event?.participantNotes
+  );
 
   async function onSubmit(values: z.infer<typeof agendaFormSchema>) {
+    const newValues: z.infer<typeof agendaFormSchema> = {
+      ...values,
+      ...(!showParticipantNotes && { participantNotes: undefined }),
+    };
     if (mode === "create") {
-      const { error } = (await createAgenda(values)) || {};
+      const { error } = (await createAgenda(newValues)) || {};
       if (!error) {
         toast.success("Tambah berhasil dilakukan.");
       } else {
         toast.error(error);
       }
     } else if (mode === "edit") {
-      const { error } = (await updateAgenda(event.id, values)) || {};
+      const { error } = (await updateAgenda(event.id, newValues)) || {};
       if (!error) {
         toast.success("Edit berhasil dilakukan.");
       } else {
@@ -120,55 +129,86 @@ export const AgendaForm = ({ mode, participants, event }: AgendaFormProps) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="participants"
-          render={() => (
-            <FormItem>
-              <div className="mb-4">
-                <FormLabel>Kehadiran</FormLabel>
-              </div>
-              {participants.map((participant) => (
-                <FormField
-                  key={participant.id}
-                  control={form.control}
-                  name="participants"
-                  render={({ field }) => {
-                    return (
-                      <FormItem
-                        key={participant.id}
-                        className="flex flex-row items-start space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(participant.id)}
-                            onCheckedChange={(checked) => {
-                              return checked
-                                ? field.onChange([
-                                    ...field.value,
-                                    participant.id,
-                                  ])
-                                : field.onChange(
-                                    field.value?.filter(
-                                      (value) => value !== participant.id
-                                    )
-                                  );
-                            }}
-                            disabled={mode === "view"}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {participant.name}
-                        </FormLabel>
-                      </FormItem>
-                    );
-                  }}
-                />
-              ))}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div>
+          <FormField
+            control={form.control}
+            name="participants"
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel>Kehadiran</FormLabel>
+                </div>
+                {participants.map((participant) => (
+                  <FormField
+                    key={participant.id}
+                    control={form.control}
+                    name="participants"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={participant.id}
+                          className="flex flex-row items-start space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(participant.id)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([
+                                      ...field.value,
+                                      participant.id,
+                                    ])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== participant.id
+                                      )
+                                    );
+                              }}
+                              disabled={mode === "view"}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {participant.name}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="participantNotes"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row items-start space-x-3 space-y-0 mt-2">
+                  <Checkbox
+                    id="participantNotes"
+                    checked={showParticipantNotes}
+                    onCheckedChange={(checked) =>
+                      setShowParticipantNotes(!!checked)
+                    }
+                    disabled={mode === "view"}
+                  />
+                  <Label htmlFor="participantNotes" className="font-normal">
+                    Perwakilan
+                  </Label>
+                </div>
+                {showParticipantNotes && (
+                  <>
+                    <FormControl>
+                      <Textarea {...field} disabled={mode === "view"} />
+                    </FormControl>
+                    <FormMessage />
+                  </>
+                )}
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="location"

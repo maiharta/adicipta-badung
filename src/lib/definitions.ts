@@ -22,6 +22,7 @@ export interface MyEvent extends CalendarEvent {
   id: number;
   description?: string | null;
   participants: Participant[];
+  participantNotes?: string | null;
   location: string;
   startTime: string;
   endTime: string;

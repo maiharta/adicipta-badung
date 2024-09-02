@@ -34,6 +34,7 @@ export const CalendarSchedule = ({
     end: event.startDate,
     description: event.description,
     participants: event.participants,
+    participantNotes: event.participantNotes,
     location: event.location,
     startTime: event.startTime,
     endTime: event.endTime,
@@ -235,6 +236,14 @@ export const CalendarSchedule = ({
                   <p>-</p>
                 )}
               </div>
+              {myEventSelected.participantNotes && (
+                <div>
+                  <Label>Perwakilan</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {myEventSelected.participantNotes}
+                  </p>
+                </div>
+              )}
               <div>
                 <Label>Keterangan</Label>
                 <p className="text-sm text-muted-foreground">
