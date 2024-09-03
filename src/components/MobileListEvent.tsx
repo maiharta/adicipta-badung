@@ -42,6 +42,14 @@ export const MobileListEvent = ({ events }: { events: MyEvent[] }) => {
             </div>
             {event.id === eventOpen && (
               <div className="mt-4">
+                {event.inviter && (
+                  <div>
+                    <Label className="text-sm">Pengundang</Label>
+                    <p className="text-sm text-muted-foreground">
+                      {event.inviter}
+                    </p>
+                  </div>
+                )}
                 <div>
                   <Label className="text-sm">Kehadiran</Label>
                   {event.participants.length > 0 ? (

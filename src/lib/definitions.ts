@@ -48,6 +48,7 @@ export type Neighborhood = Prisma.NeighborhoodGetPayload<{
 export interface MyEvent extends CalendarEvent {
   id: number;
   description?: string | null;
+  inviter?: string | null;
   participants: Participant[];
   participantNotes?: string | null;
   neighborhood?: Neighborhood | null;

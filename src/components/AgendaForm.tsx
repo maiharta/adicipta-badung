@@ -121,6 +121,7 @@ export const AgendaForm = ({
       title: event?.title ?? "",
       location: event?.location ?? "",
       description: event?.description ?? undefined,
+      inviter: event?.inviter ?? undefined,
       participants:
         event?.participants.map((participant) => participant.id) ?? [],
       participantNotes: event?.participantNotes ?? undefined,
@@ -205,6 +206,19 @@ export const AgendaForm = ({
               <FormLabel>Keterangan (Opsional)</FormLabel>
               <FormControl>
                 <Textarea {...field} disabled={mode === "view"} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="inviter"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pengundang (Opsional)</FormLabel>
+              <FormControl>
+                <Input {...field} disabled={mode === "view"} />
               </FormControl>
               <FormMessage />
             </FormItem>

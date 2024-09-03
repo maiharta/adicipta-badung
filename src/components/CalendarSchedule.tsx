@@ -33,6 +33,7 @@ export const CalendarSchedule = ({
     start: event.startDate,
     end: event.startDate,
     description: event.description,
+    inviter: event.inviter,
     participants: event.participants,
     participantNotes: event.participantNotes,
     neighborhood: event.neighborhood,
@@ -223,6 +224,14 @@ export const CalendarSchedule = ({
                   <p className="flex-1 text-sm">{`${myEventSelected.startTime} - ${myEventSelected.endTime}`}</p>
                 </div>
               </div>
+              {myEventSelected.inviter && (
+                <div>
+                  <Label>Pengundang</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {myEventSelected.inviter}
+                  </p>
+                </div>
+              )}
               <div>
                 <Label>Kehadiran</Label>
                 {myEventSelected.participants.length > 0 ? (

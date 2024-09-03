@@ -8,6 +8,7 @@ export const loginFormSchema = z.object({
 export const agendaFormSchema = z.object({
   title: z.string().min(1, "Nama agenda tidak boleh kosong."),
   description: z.string().min(1, "Keterangan tidak boleh kosong.").optional(),
+  inviter: z.string().optional(),
   participants: z.array(z.number()),
   participantNotes: z.string().optional(),
   districtId: z.number().optional(),

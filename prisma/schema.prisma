@@ -29,6 +29,7 @@ model Event {
   title                  String
   neighborhood           Neighborhood? @relation(fields: [neighborhoodId], references: [id])
   location               String
+  inviter                String?
   startDate              DateTime      @map("start_date")
   endDate                DateTime      @map("end_date")
   startTime              String        @map("start_time")
