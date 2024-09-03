@@ -213,7 +213,7 @@ export const AgendaForm = ({
           name="inviter"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Pengundang (Opsional)</FormLabel>
+              <FormLabel>Yang Mengundang (Opsional)</FormLabel>
               <FormControl>
                 <Input {...field} disabled={mode === "view"} />
               </FormControl>
