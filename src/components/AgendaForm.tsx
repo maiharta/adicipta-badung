@@ -184,6 +184,19 @@ export const AgendaForm = ({
       >
         <FormField
           control={form.control}
+          name="inviter"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Yang Mengundang (Opsional)</FormLabel>
+              <FormControl>
+                <Input {...field} disabled={mode === "view"} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
@@ -208,19 +221,7 @@ export const AgendaForm = ({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="inviter"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Yang Mengundang (Opsional)</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={mode === "view"} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <div>
           <FormField
             control={form.control}
