@@ -37,6 +37,7 @@ export const CalendarSchedule = ({
     participants: event.participants,
     participantNotes: event.participantNotes,
     neighborhood: event.neighborhood,
+    village: event.village,
     location: event.location,
     startTime: event.startTime,
     endTime: event.endTime,

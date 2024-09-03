@@ -57,6 +57,7 @@ export interface MyEvent extends CalendarEvent {
   participants: Participant[];
   participantNotes?: string | null;
   neighborhood?: Neighborhood | null;
+  village?: Village | null;
   location: string;
   startTime: string;
   endTime: string;

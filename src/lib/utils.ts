@@ -19,9 +19,15 @@ export function formatDateToLocal(dateStr: string, locale: string = "id-ID") {
 
 export function joinEventLocation(event: MyEvent): string {
   return [
-    event.neighborhood?.village.district.name,
-    event.neighborhood?.village.name,
-    event.neighborhood?.name,
+    ...(event.neighborhood
+      ? [
+          event.neighborhood?.village.district.name,
+          event.neighborhood?.village.name,
+          event.neighborhood?.name,
+        ]
+      : event.village
+      ? [event.village.district.name, event.village.name]
+      : []),
     event.location,
   ]
     .filter((item) => item !== undefined && item !== null)
