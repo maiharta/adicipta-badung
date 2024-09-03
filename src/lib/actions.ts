@@ -50,13 +50,23 @@ export async function createAgenda(values: z.infer<typeof agendaFormSchema>) {
         },
         inviter: values.inviter || null,
         participantNotes: values.participantNotes,
-        ...(values.neighborhoodId && {
-          neighborhood: {
-            connect: {
-              id: values.neighborhoodId,
-            },
-          },
-        }),
+        ...(values.neighborhoodId
+          ? {
+              neighborhood: {
+                connect: {
+                  id: values.neighborhoodId,
+                },
+              },
+            }
+          : values.villageId
+          ? {
+              village: {
+                connect: {
+                  id: values.villageId,
+                },
+              },
+            }
+          : undefined),
         location: values.location,
         startDate: values.date,
         endDate: values.date,
@@ -122,11 +132,23 @@ export async function updateAgenda(
                 },
               },
             }
+          : values.villageId
+          ? {
+              village: {
+                connect: {
+                  id: values.villageId,
+                },
+              },
+              neighborhood: {
+                disconnect: true,
+              },
+            }
           : {
               neighborhood: {
-                disconnect: {
-                  id: values.neighborhoodId,
-                },
+                disconnect: true,
+              },
+              village: {
+                disconnect: true,
               },
             }),
         location: values.location,

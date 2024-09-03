@@ -28,6 +28,7 @@ model Event {
   id                     Int           @id @default(autoincrement())
   title                  String
   neighborhood           Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+  village                Village?      @relation(fields: [villageId], references: [id])
   location               String
   inviter                String?
   startDate              DateTime      @map("start_date")
@@ -44,6 +45,7 @@ model Event {
   participants           Participant[]
   participantNotes       String?       @map("participant_notes")
   neighborhoodId         Int?          @map("neighborhood_id")
+  villageId              Int?          @map("village_id")
 
   @@map("events")
 }
@@ -91,6 +93,7 @@ model Village {
   updatedAt     DateTime       @updatedAt @map("updated_at")
   neighborhoods Neighborhood[]
   districtId    Int            @map("district_id")
+  events        Event[]
 
   @@map("villages")
 }

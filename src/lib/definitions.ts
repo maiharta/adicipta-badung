@@ -13,6 +13,11 @@ export type Event = Prisma.EventGetPayload<{
         };
       };
     };
+    village: {
+      include: {
+        district: true;
+      };
+    };
     attachments: true;
   };
 }>;

@@ -107,13 +107,6 @@ export const AgendaForm = ({
               message: "Desa tidak boleh kosong.",
             });
           }
-          if (!data.neighborhoodId) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              path: ["neighborhoodId"],
-              message: "Banjar tidak boleh kosong.",
-            });
-          }
         }
       })
     ),
@@ -125,8 +118,12 @@ export const AgendaForm = ({
       participants:
         event?.participants.map((participant) => participant.id) ?? [],
       participantNotes: event?.participantNotes ?? undefined,
-      districtId: event?.neighborhood?.village.districtId,
-      villageId: event?.neighborhood?.villageId,
+      districtId: event?.neighborhood
+        ? event?.neighborhood?.village.districtId
+        : event?.village?.districtId,
+      villageId: event?.neighborhood
+        ? event?.neighborhood?.villageId
+        : event?.villageId ?? undefined,
       neighborhoodId: event?.neighborhoodId ?? undefined,
       date: event?.startDate,
       startTime: event?.startTime ?? "",
@@ -143,7 +140,7 @@ export const AgendaForm = ({
     !!event?.participantNotes
   );
   const [isOutsideBadung, setIsOutsideBadung] = useState(
-    mode === "create" ? false : !event?.neighborhood
+    mode === "create" ? false : !(event?.neighborhood || event.village)
   );
 
   const onSubmit = async (values: z.infer<typeof agendaFormSchema>) => {

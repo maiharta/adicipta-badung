@@ -22,6 +22,11 @@ export const getEvents = async () => {
           },
         },
       },
+      village: {
+        include: {
+          district: true,
+        },
+      },
       attachments: true,
     },
   });
@@ -43,6 +48,11 @@ export const getEventById = async (id: number) => {
               district: true,
             },
           },
+        },
+      },
+      village: {
+        include: {
+          district: true,
         },
       },
       attachments: true,
