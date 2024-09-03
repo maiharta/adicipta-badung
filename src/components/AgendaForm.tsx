@@ -97,14 +97,14 @@ export const AgendaForm = ({
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ["districtId"],
-              message: "Kecamatan tidak boleh kosong.",
+              message: "Kecamatan/Kelurahan tidak boleh kosong.",
             });
           }
           if (!data.villageId) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ["villageId"],
-              message: "Desa tidak boleh kosong.",
+              message: "Desa/Lingkungan tidak boleh kosong.",
             });
           }
         }
@@ -388,7 +388,7 @@ export const AgendaForm = ({
                 name="villageId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Desa</FormLabel>
+                    <FormLabel>Desa/Kelurahan</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -405,16 +405,18 @@ export const AgendaForm = ({
                               ? villages?.find(
                                   (village) => village.id === field.value
                                 )?.name
-                              : "Pilih desa"}
+                              : "Pilih desa/kelurahan"}
                             <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent align="start" className="p-0">
                         <Command>
-                          <CommandInput placeholder="Cari desa..." />
+                          <CommandInput placeholder="Cari desa/kelurahan..." />
                           <CommandList>
-                            <CommandEmpty>Desa tidak ditemukan.</CommandEmpty>
+                            <CommandEmpty>
+                              Desa/Kelurahan tidak ditemukan.
+                            </CommandEmpty>
                             <CommandGroup>
                               {villages
                                 ?.filter((village) => {
@@ -461,7 +463,7 @@ export const AgendaForm = ({
                 name="neighborhoodId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Banjar</FormLabel>
+                    <FormLabel>Banjar/Lingkungan</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -479,16 +481,18 @@ export const AgendaForm = ({
                                   (neighborhood) =>
                                     neighborhood.id === field.value
                                 )?.name
-                              : "Pilih banjar"}
+                              : "Pilih banjar/lingkungan"}
                             <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent align="start" className="p-0">
                         <Command>
-                          <CommandInput placeholder="Cari kecamatan..." />
+                          <CommandInput placeholder="Cari banjar/lingkungan..." />
                           <CommandList>
-                            <CommandEmpty>Banjar tidak ditemukan.</CommandEmpty>
+                            <CommandEmpty>
+                              Banjar/Lingkungan tidak ditemukan.
+                            </CommandEmpty>
                             <CommandGroup>
                               {neighborhoods
                                 ?.filter((neighborhood) => {
