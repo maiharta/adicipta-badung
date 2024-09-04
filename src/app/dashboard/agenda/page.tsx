@@ -1,5 +1,4 @@
-import { DataTable } from "@/components/DataTable";
-import { columns } from "@/components/EventColumns";
+import { DataTableEvent } from "@/components/DataTableEvent";
 import { Button } from "@/components/ui/button";
 import { getEvents } from "@/lib/data";
 import Link from "next/link";
@@ -19,7 +18,7 @@ const AgendaPage = async () => {
           </Button>
         </Link>
       </div>
-      <DataTable data={events} columns={columns} />
+      <DataTableEvent events={events} />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { MyEvent } from "./definitions";
+import { Event, MyEvent } from "./definitions";
 import { Role } from "@prisma/client";
+import { Workbook, Worksheet } from "exceljs";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -44,4 +45,90 @@ export function capitalizeWords(str: string): string {
 
 export function formatRole(role: Role): string {
   return role === Role.USER ? "Lihat Saja" : capitalizeWords(role);
+}
+
+function autoFitColumnWidth(worksheet: Worksheet, minimalWidth = 10) {
+  worksheet.columns.forEach((column) => {
+    let maxColumnLength = 0;
+    if (column && typeof column.eachCell === "function") {
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        maxColumnLength = Math.max(
+          maxColumnLength,
+          minimalWidth,
+          cell.value ? cell.value.toString().length : 0
+        );
+      });
+      column.width = maxColumnLength + 2;
+    }
+  });
+  return worksheet;
+}
+
+export async function exportExcell(events: Event[]) {
+  const workbook = new Workbook();
+
+  const ws = workbook.addWorksheet();
+
+  ws.columns = [
+    {
+      key: "title",
+      header: "Nama Agenda",
+    },
+    {
+      key: "location",
+      header: "Lokasi",
+    },
+    {
+      key: "date",
+      header: "Tanggal",
+    },
+    {
+      key: "startTime",
+      header: "Waktu Mulai",
+    },
+    {
+      key: "endTime",
+      header: "Waktu Akhir",
+    },
+    {
+      key: "coordinator",
+      header: "Nama Penanggung Jawab",
+    },
+    {
+      key: "coordinatorPhoneNumber",
+      header: "No. Telepon Penanggung Jawab",
+    },
+  ];
+
+  ws.getRow(1).eachCell((cell) => {
+    cell.border = {
+      bottom: {
+        style: "double",
+      },
+    };
+    cell.font = {
+      bold: true,
+    };
+    cell.alignment = {
+      horizontal: "center",
+    };
+  });
+
+  events.forEach((event) =>
+    ws.addRow({
+      title: event.title,
+      location: event.location,
+      date: formatDateToLocal(event.startDate.toDateString()),
+      startTime: event.startTime,
+      endTime: event.endTime,
+      coordinator: event.coordinator,
+      coordinatorPhoneNumber: event.coordinatorPhoneNumber,
+    })
+  );
+
+  autoFitColumnWidth(ws);
+
+  const buffer = await workbook.xlsx.writeBuffer();
+
+  return buffer;
 }
