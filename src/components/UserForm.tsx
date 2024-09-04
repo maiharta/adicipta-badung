@@ -126,7 +126,7 @@ export const UserForm = ({ mode, user }: UserFormProps) => {
                   <SelectGroup>
                     <SelectItem value="ADMIN">Admin</SelectItem>
                     <SelectItem value="INPUTER">Inputer</SelectItem>
-                    <SelectItem value="USER">User</SelectItem>
+                    <SelectItem value="USER">Lihat Saja</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

@@ -11,6 +11,7 @@ import { LuLogOut } from "react-icons/lu";
 import { logout } from "@/lib/actions";
 import { Session } from "next-auth";
 import { Drawer } from "./Drawer";
+import { formatRole } from "@/lib/utils";
 
 const Navbar = ({ session }: { session: Session | null }) => {
   return (
@@ -23,7 +24,7 @@ const Navbar = ({ session }: { session: Session | null }) => {
             {session?.user.username}
           </span>
           <span className="text-xs text-muted-foreground text-right">
-            {session?.user.role}
+            {session ? formatRole(session?.user.role) : ""}
           </span>
         </div>
         <DropdownMenu>

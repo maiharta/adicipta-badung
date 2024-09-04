@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { MyEvent } from "./definitions";
+import { Role } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -32,4 +33,15 @@ export function joinEventLocation(event: MyEvent): string {
   ]
     .filter((item) => item !== undefined && item !== null)
     .join(", ");
+}
+
+export function capitalizeWords(str: string): string {
+  return str
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
+
+export function formatRole(role: Role): string {
+  return role === Role.USER ? "Lihat Saja" : capitalizeWords(role);
 }

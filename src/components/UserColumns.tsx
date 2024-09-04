@@ -5,6 +5,7 @@ import { DataTableColumnHeader } from "./DataTableColumnHeader";
 import { ActionButtonsWrapper } from "./ActionButtonsWrapper";
 import { EditActionButton, ViewActionButton } from "./Buttons";
 import { User } from "@/lib/definitions";
+import { formatRole } from "@/lib/utils";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -29,6 +30,7 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Role" />
     ),
+    cell: ({ row }) => formatRole(row.original.role),
   },
   {
     id: "actions",
