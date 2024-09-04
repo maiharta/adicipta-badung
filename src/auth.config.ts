@@ -13,11 +13,16 @@ export const authConfig = {
       if (isOnDashboard) {
         if (isLoggedIn) {
           const role = auth.user.role;
-          if (nextUrl.pathname.startsWith("/dashboard")) {
+          if (nextUrl.pathname === "/dashboard") {
             return true;
           } else if (
-            nextUrl.pathname.startsWith("/user") ||
-            (nextUrl.pathname.startsWith("/agenda") && role === Role.ADMIN)
+            nextUrl.pathname.startsWith("/dashboard/user") &&
+            role === Role.ADMIN
+          ) {
+            return true;
+          } else if (
+            nextUrl.pathname.startsWith("/dashboard/agenda") &&
+            (role === Role.ADMIN || role === Role.INPUTER)
           ) {
             return true;
           }
@@ -29,6 +34,22 @@ export const authConfig = {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
       return true;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        return {
+          ...token,
+          user,
+        };
+      }
+
+      return token;
+    },
+    session({ session, token }) {
+      return {
+        ...session,
+        user: (token as any).user,
+      };
     },
   },
 } satisfies NextAuthConfig;

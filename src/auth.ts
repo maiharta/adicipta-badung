@@ -35,22 +35,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "jwt",
     maxAge: 5 * 60,
   },
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        return {
-          ...token,
-          user,
-        };
-      }
-
-      return token;
-    },
-    session({ session, token }) {
-      return {
-        ...session,
-        user: (token as any).user,
-      };
-    },
-  },
 });

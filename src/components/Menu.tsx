@@ -15,7 +15,7 @@ const menuItems = [
         icon: <LuHome />,
         label: "Home",
         href: "/dashboard",
-        role: [Role.ADMIN, Role.USER],
+        role: [Role.ADMIN, Role.INPUTER, Role.USER],
       },
       {
         icon: <LuUser />,
@@ -27,7 +27,7 @@ const menuItems = [
         icon: <LuCalendarDays />,
         label: "Agenda",
         href: "/dashboard/agenda",
-        role: [Role.ADMIN],
+        role: [Role.ADMIN, Role.INPUTER],
       },
     ],
   },
