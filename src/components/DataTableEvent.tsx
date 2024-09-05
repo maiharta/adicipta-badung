@@ -39,7 +39,15 @@ export const DataTableEvent = ({ events }: { events: Event[] }) => {
         const eventDate = moment(event.startDate);
 
         if (!showAll) {
-          return eventDate.isSameOrAfter(moment().startOf("day"));
+          return (
+            eventDate.isSameOrAfter(moment().startOf("day")) &&
+            eventDate.isBetween(
+              date.from,
+              date.to ?? date.from,
+              undefined,
+              "[]"
+            )
+          );
         }
 
         return eventDate.isBetween(
