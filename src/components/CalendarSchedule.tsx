@@ -19,6 +19,7 @@ import { FileItem } from "./FileItem";
 import { Event as IEvent, MyEvent } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
 import { MobileListEvent } from "./MobileListEvent";
+import { NumberBadge } from "./NumberBadge";
 
 const localizer = momentLocalizer(moment);
 
@@ -190,6 +191,7 @@ export const CalendarSchedule = ({
                         <p className="flex-1 text-sm">{`${event.startTime} - ${event.endTime}`}</p>
                       </div>
                     </div>
+                    <NumberBadge number={i + 1} className="m-2" />
                   </div>
                 ))
               ) : (
