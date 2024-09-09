@@ -19,7 +19,7 @@ import { Textarea } from "./ui/textarea";
 import { MyDropzone } from "./MyDropzone";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { cn, formatDateToLocal } from "@/lib/utils";
+import { cn, formatDateToLocal, parseDateOrUndefined } from "@/lib/utils";
 import { agendaFormSchema } from "@/lib/schemas";
 import { createAgenda, updateAgenda } from "@/lib/actions";
 import { FileItem } from "./FileItem";
@@ -42,6 +42,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
+import { useSearchParams } from "next/navigation";
 
 type AgendaFormProps =
   | {
@@ -77,6 +78,10 @@ export const AgendaForm = ({
   neighborhoods,
   event,
 }: AgendaFormProps) => {
+  const searchParams = useSearchParams();
+
+  const date = searchParams.get("tanggal");
+
   const form = useForm<z.infer<typeof agendaFormSchema>>({
     resolver: zodResolver(
       agendaFormSchema.superRefine((data, ctx) => {
@@ -125,7 +130,7 @@ export const AgendaForm = ({
         ? event?.neighborhood?.villageId
         : event?.villageId ?? undefined,
       neighborhoodId: event?.neighborhoodId ?? undefined,
-      date: event?.startDate,
+      date: mode === "create" ? parseDateOrUndefined(date) : event?.startDate,
       startTime: event?.startTime ?? "",
       endTime: event?.endTime ?? "",
       code: event?.code ?? "",

@@ -9,6 +9,7 @@ import {
   LuBadgeCheck,
   LuCalendarDays,
   LuMapPin,
+  LuPlus,
   LuTimer,
 } from "react-icons/lu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -20,6 +21,8 @@ import { Event as IEvent, MyEvent } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
 import { MobileListEvent } from "./MobileListEvent";
 import { NumberBadge } from "./NumberBadge";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 const localizer = momentLocalizer(moment);
 
@@ -157,8 +160,17 @@ export const CalendarSchedule = ({
         </div>
         <ScrollArea className="hidden sm:block">
           <div className="bg-white p-4 rounded-xl">
-            <div>
+            <div className="flex items-center justify-between">
               <p className="text-xl font-semibold">Daftar Agenda</p>
+              <Link
+                href={`dashboard/agenda/tambah?tanggal=${moment(
+                  selectedDate
+                ).format("YYYY-MM-DD")}`}
+              >
+                <Button variant="outline" size="icon">
+                  <LuPlus />
+                </Button>
+              </Link>
             </div>
             <div className="mt-4 space-y-2">
               {myEvent.length > 0 ? (
@@ -201,7 +213,9 @@ export const CalendarSchedule = ({
           </div>
         </ScrollArea>
       </div>
-      {myEvent && <MobileListEvent events={myEvent} />}
+      {myEvent && (
+        <MobileListEvent selectedDate={selectedDate} events={myEvent} />
+      )}
       <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
         <DialogContent>
           {myEventSelected ? (

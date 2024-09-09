@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { Event, MyEvent } from "./definitions";
 import { Role } from "@prisma/client";
 import { Workbook, Worksheet } from "exceljs";
+import moment from "moment";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -131,4 +132,12 @@ export async function exportExcell(events: Event[]) {
   const buffer = await workbook.xlsx.writeBuffer();
 
   return buffer;
+}
+
+export function parseDateOrUndefined(
+  dateString?: string | null
+): Date | undefined {
+  return dateString && moment(dateString, "YYYY-MM-DD", true).isValid()
+    ? moment(dateString, "YYYY-MM-DD").toDate()
+    : undefined;
 }
