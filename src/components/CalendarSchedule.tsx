@@ -12,6 +12,8 @@ import { MobileListEvent } from "./MobileListEvent";
 import { DesktopEventDialog } from "./DesktopEventDialog";
 import { Session } from "next-auth";
 import { DesktopListEvent } from "./DesktopListEvent";
+import { toast } from "sonner";
+import { deleteAgenda } from "@/lib/actions";
 
 const localizer = momentLocalizer(moment);
 
@@ -154,6 +156,18 @@ export const CalendarSchedule = ({
         session={session}
         selectedDate={selectedDate}
         events={myEvent}
+        onRemove={async (event) => {
+          const { error } = (await deleteAgenda(event.id)) || {};
+          if (!error) {
+            handleSelectSlot({ start: selectedDate });
+            setMyEvent((prev) =>
+              prev.filter((pEvent) => pEvent.id != event.id)
+            );
+            toast.success("Hapus berhasil dilakukan.");
+          } else {
+            toast.error(error);
+          }
+        }}
       />
       {myEventSelected && (
         <DesktopEventDialog
@@ -161,6 +175,18 @@ export const CalendarSchedule = ({
           event={myEventSelected}
           open={open}
           onOpenChange={setOpen}
+          onRemove={async (event) => {
+            const { error } = (await deleteAgenda(event.id)) || {};
+            if (!error) {
+              setOpen(false);
+              setMyEvent((prev) =>
+                prev.filter((pEvent) => pEvent.id != event.id)
+              );
+              toast.success("Hapus berhasil dilakukan.");
+            } else {
+              toast.error(error);
+            }
+          }}
         />
       )}
     </div>

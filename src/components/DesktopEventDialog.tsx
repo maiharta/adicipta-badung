@@ -13,9 +13,6 @@ import { FileItem } from "./FileItem";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { RemoveButton } from "./Buttons";
-import { deleteAgenda } from "@/lib/actions";
-import { toast } from "sonner";
-import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 
 export const DesktopEventDialog = ({
@@ -23,11 +20,13 @@ export const DesktopEventDialog = ({
   onOpenChange,
   event,
   session,
+  onRemove,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   event: MyEvent;
   session: Session | null;
+  onRemove: (event: MyEvent) => void;
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -106,27 +105,14 @@ export const DesktopEventDialog = ({
         )}
         {(session?.user.role === "ADMIN" ||
           session?.user.role === "INPUTER") && (
-          <div className="flex gap-2">
-            <Link
-              href={`/dashboard/agenda/${event.id}/edit`}
-              className="flex-1 "
-            >
+          <div className="grid grid-cols-2 gap-2">
+            <Link href={`/dashboard/agenda/${event.id}/edit`}>
               <Button variant="outline" className="w-full flex gap-2">
                 <LuPencil />
                 Edit
               </Button>
             </Link>
-            <RemoveButton
-              onRemove={async () => {
-                const { error } = (await deleteAgenda(event.id)) || {};
-                if (!error) {
-                  toast.success("Hapus berhasil dilakukan.");
-                  onOpenChange(false);
-                } else {
-                  toast.error(error);
-                }
-              }}
-            />
+            <RemoveButton onRemove={() => onRemove(event)} />
           </div>
         )}
       </DialogContent>

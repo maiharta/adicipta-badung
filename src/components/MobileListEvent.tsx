@@ -7,6 +7,7 @@ import {
   LuBadgeCheck,
   LuCalendarDays,
   LuMapPin,
+  LuPencil,
   LuPlus,
   LuTimer,
 } from "react-icons/lu";
@@ -17,15 +18,18 @@ import { NumberBadge } from "./NumberBadge";
 import Link from "next/link";
 import moment from "moment";
 import { Session } from "next-auth";
+import { RemoveButton } from "./Buttons";
 
 export const MobileListEvent = ({
   session,
   selectedDate,
   events,
+  onRemove,
 }: {
   session: Session | null;
   selectedDate: Date;
   events: MyEvent[];
+  onRemove: (event: MyEvent) => void;
 }) => {
   const [eventOpen, setEventOpen] = useState(-1);
 
@@ -140,31 +144,45 @@ export const MobileListEvent = ({
                     )}
                   </div>
                 )}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    if (event.id !== eventOpen) {
-                      setEventOpen(event.id);
-                    } else {
-                      setEventOpen(-1);
-                    }
-                  }}
-                  className="mx-auto mt-4 w-min text-xs"
-                >
-                  {event.id !== eventOpen ? (
-                    <>
-                      <LuArrowDownCircle className="me-1" />
-                      Show More
-                    </>
-                  ) : (
-                    <>
-                      <LuArrowUpCircle className="me-1" />
-                      Show Less
-                    </>
-                  )}
-                </Button>
               </div>
               <NumberBadge number={i + 1} className="m-2" />
+            </div>
+            <div className="flex flex-col p-2">
+              {(session?.user.role === "ADMIN" ||
+                session?.user.role === "INPUTER") && (
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href={`/dashboard/agenda/${event.id}/edit`}>
+                    <Button variant="outline" className="w-full flex gap-2">
+                      <LuPencil />
+                      Edit
+                    </Button>
+                  </Link>
+                  <RemoveButton onRemove={() => onRemove(event)} />
+                </div>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (event.id !== eventOpen) {
+                    setEventOpen(event.id);
+                  } else {
+                    setEventOpen(-1);
+                  }
+                }}
+                className="mx-auto mt-4 w-min text-xs"
+              >
+                {event.id !== eventOpen ? (
+                  <>
+                    <LuArrowDownCircle className="me-1" />
+                    Show More
+                  </>
+                ) : (
+                  <>
+                    <LuArrowUpCircle className="me-1" />
+                    Show Less
+                  </>
+                )}
+              </Button>
             </div>
           </div>
         ))
