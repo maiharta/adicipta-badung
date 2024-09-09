@@ -1,34 +1,29 @@
 "use client";
 
-import { Calendar, momentLocalizer, Event } from "react-big-calendar";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/id";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
-import {
-  LuBadgeCheck,
-  LuCalendarDays,
-  LuMapPin,
-  LuPlus,
-  LuTimer,
-} from "react-icons/lu";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { LuCalendarDays, LuMapPin, LuPlus, LuTimer } from "react-icons/lu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Label } from "./ui/label";
 import { cn, formatDateToLocal, joinEventLocation } from "@/lib/utils";
-import { FileItem } from "./FileItem";
 import { Event as IEvent, MyEvent } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
 import { MobileListEvent } from "./MobileListEvent";
 import { NumberBadge } from "./NumberBadge";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { DesktopEventDialog } from "./DesktopEventDialog";
+import { Session } from "next-auth";
 
 const localizer = momentLocalizer(moment);
 
 export const CalendarSchedule = ({
+  session,
   prismaEvents,
 }: {
+  session: Session | null;
   prismaEvents: IEvent[];
 }) => {
   const events = prismaEvents.map<MyEvent>((event) => ({
@@ -216,101 +211,14 @@ export const CalendarSchedule = ({
       {myEvent && (
         <MobileListEvent selectedDate={selectedDate} events={myEvent} />
       )}
-      <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
-        <DialogContent>
-          {myEventSelected ? (
-            <>
-              <div>
-                <p className="text-2xl font-bold">{myEventSelected.title}</p>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <LuMapPin size={14} />
-                  <p className="flex-1 text-sm">
-                    {joinEventLocation(myEventSelected)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <LuCalendarDays size={14} />
-                  <p className="flex-1 text-sm">
-                    {formatDateToLocal(
-                      myEventSelected.start?.toDateString() ?? ""
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <LuTimer size={14} />
-                  <p className="flex-1 text-sm">{`${myEventSelected.startTime} - ${myEventSelected.endTime}`}</p>
-                </div>
-              </div>
-              {myEventSelected.inviter && (
-                <div>
-                  <Label>Pengundang</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {myEventSelected.inviter}
-                  </p>
-                </div>
-              )}
-              <div>
-                <Label>Kehadiran</Label>
-                {myEventSelected.participants.length > 0 ? (
-                  myEventSelected.participants.map((participant) => (
-                    <div
-                      key={participant.id}
-                      className="flex items-center gap-1"
-                    >
-                      <LuBadgeCheck className="text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        {participant.name}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p>-</p>
-                )}
-              </div>
-              {myEventSelected.participantNotes && (
-                <div>
-                  <Label>Perwakilan</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {myEventSelected.participantNotes}
-                  </p>
-                </div>
-              )}
-              <div>
-                <Label>Keterangan</Label>
-                <p className="text-sm text-muted-foreground">
-                  {myEventSelected.description || "-"}
-                </p>
-              </div>
-              <div>
-                <Label>Nama Penanggung Jawab</Label>
-                <p className="text-sm text-muted-foreground">
-                  {myEventSelected.coordinator || "-"}
-                </p>
-              </div>
-              <div>
-                <Label>No. Telepon Penanggung Jawab</Label>
-                <p className="text-sm text-muted-foreground">
-                  {myEventSelected.coordinatorPhoneNumber || "-"}
-                </p>
-              </div>
-              {myEventSelected.attachments.length > 0 && (
-                <div className="space-y-1">
-                  <Label>Lampiran</Label>
-                  {myEventSelected.attachments.map((attachment) => (
-                    <FileItem
-                      key={attachment.id}
-                      mode="view"
-                      file={attachment}
-                    />
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <p>Loading...</p>
-          )}
-        </DialogContent>
-      </Dialog>
+      {myEventSelected && (
+        <DesktopEventDialog
+          session={session}
+          event={myEventSelected}
+          open={open}
+          onOpenChange={setOpen}
+        />
+      )}
     </div>
   );
 };

@@ -103,36 +103,27 @@ export const RemoveActionButton = ({ onRemove }: { onRemove: () => void }) => {
   );
 };
 
-export const SendEmailActionButton = ({ onSend }: { onSend: () => void }) => {
+export const RemoveButton = ({ onRemove }: { onRemove: () => void }) => {
   return (
-    <Tooltip>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <LuSend size={14} />
-              <span className="sr-only">Send Email</span>
-            </Button>
-          </TooltipTrigger>
-        </AlertDialogTrigger>
-        <AlertDialogContent
-          onCloseAutoFocus={(event) => event.preventDefault()}
-        >
-          <AlertDialogHeader>
-            <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={onSend}>Lanjutkan</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      <TooltipContent>
-        <p>Send Email</p>
-      </TooltipContent>
-    </Tooltip>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="flex-1 flex gap-2">
+          <LuTrash2 /> Hapus
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent onCloseAutoFocus={(event) => event.preventDefault()}>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Tindakan ini tidak dapat dibatalkan dan akan menghapus secara
+            permanen.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Batal</AlertDialogCancel>
+          <AlertDialogAction onClick={onRemove}>Lanjutkan</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
