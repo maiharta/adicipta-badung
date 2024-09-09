@@ -16,11 +16,14 @@ import { Button } from "./ui/button";
 import { NumberBadge } from "./NumberBadge";
 import Link from "next/link";
 import moment from "moment";
+import { Session } from "next-auth";
 
 export const MobileListEvent = ({
+  session,
   selectedDate,
   events,
 }: {
+  session: Session | null;
   selectedDate: Date;
   events: MyEvent[];
 }) => {
@@ -35,9 +38,12 @@ export const MobileListEvent = ({
             "YYYY-MM-DD"
           )}`}
         >
-          <Button variant="outline" size="icon">
-            <LuPlus />
-          </Button>
+          {(session?.user.role === "ADMIN" ||
+            session?.user.role === "INPUTER") && (
+            <Button variant="outline" size="icon">
+              <LuPlus />
+            </Button>
+          )}
         </Link>
       </div>
       {events.length > 0 ? (

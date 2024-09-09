@@ -5,17 +5,13 @@ import moment from "moment";
 import "moment/locale/id";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
-import { LuCalendarDays, LuMapPin, LuPlus, LuTimer } from "react-icons/lu";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn, formatDateToLocal, joinEventLocation } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Event as IEvent, MyEvent } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
 import { MobileListEvent } from "./MobileListEvent";
-import { NumberBadge } from "./NumberBadge";
-import Link from "next/link";
-import { Button } from "./ui/button";
 import { DesktopEventDialog } from "./DesktopEventDialog";
 import { Session } from "next-auth";
+import { DesktopListEvent } from "./DesktopListEvent";
 
 const localizer = momentLocalizer(moment);
 
@@ -83,134 +79,82 @@ export const CalendarSchedule = ({
   }, [isMobile]);
 
   return (
-    <div className="flex flex-col gap-4 lg:h-screen">
-      {/* <Image
-          src="/logo.webp"
-          alt="logo"
-          width={234}
-          height={40}
-          className="mx-auto"
-        /> */}
-      <div className="lg:flex-1 lg:h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="h-[400px] sm:h-[600px] lg:h-auto lg:col-span-2 bg-white p-4 rounded-xl">
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            views={["month"]}
-            date={date}
-            onNavigate={(date) => {
-              setDate(new Date(date));
-            }}
-            dayPropGetter={() => {
-              return {
-                className: "cursor-pointer",
-              };
-            }}
-            eventPropGetter={() => {
-              return {
-                className: "hidden sm:block bg-primary text-xs lg:text-sm",
-              };
-            }}
-            selectable
-            popup
-            onSelectSlot={handleSelectSlot}
-            onSelectEvent={(event) => {
-              setMyEventSelected(event);
-              setOpen(true);
-            }}
-            longPressThreshold={10}
-            components={{
-              dateCellWrapper: ({ children, value }) => (
-                <div
-                  className={`rbc-day-bg cursor-pointer ${dateCellClassName(
-                    value
-                  )}`}
-                >
-                  {children}
-                </div>
-              ),
-              month: {
-                dateHeader: ({ date }) => {
-                  const eventsForDate = events.filter((e) =>
-                    moment(e.start).isSame(date, "day")
-                  );
-
-                  return (
-                    <div
-                      className={cn(
-                        "m-1 ms-auto w-5 h-5 flex items-center justify-center rounded-full text-xs",
-                        eventsForDate.length > 0 &&
-                          "bg-primary sm:bg-transparent text-white sm:text-black"
-                      )}
-                    >
-                      {date.getDate()}
-                    </div>
-                  );
-                },
-              },
-            }}
-          />
-        </div>
-        <ScrollArea className="hidden sm:block">
-          <div className="bg-white p-4 rounded-xl">
-            <div className="flex items-center justify-between">
-              <p className="text-xl font-semibold">Daftar Agenda</p>
-              <Link
-                href={`dashboard/agenda/tambah?tanggal=${moment(
-                  selectedDate
-                ).format("YYYY-MM-DD")}`}
+    <div className="lg:flex-1 lg:h-screen grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="h-[400px] sm:h-[600px] lg:h-auto lg:col-span-2 bg-white p-4 rounded-xl">
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          views={["month"]}
+          date={date}
+          onNavigate={(date) => {
+            setDate(new Date(date));
+          }}
+          dayPropGetter={() => {
+            return {
+              className: "cursor-pointer",
+            };
+          }}
+          eventPropGetter={() => {
+            return {
+              className: "hidden sm:block bg-primary text-xs lg:text-sm",
+            };
+          }}
+          selectable
+          popup
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={(event) => {
+            setMyEventSelected(event);
+            setOpen(true);
+          }}
+          longPressThreshold={10}
+          components={{
+            dateCellWrapper: ({ children, value }) => (
+              <div
+                className={`rbc-day-bg cursor-pointer ${dateCellClassName(
+                  value
+                )}`}
               >
-                <Button variant="outline" size="icon">
-                  <LuPlus />
-                </Button>
-              </Link>
-            </div>
-            <div className="mt-4 space-y-2">
-              {myEvent.length > 0 ? (
-                myEvent.map((event, i) => (
+                {children}
+              </div>
+            ),
+            month: {
+              dateHeader: ({ date }) => {
+                const eventsForDate = events.filter((e) =>
+                  moment(e.start).isSame(date, "day")
+                );
+
+                return (
                   <div
-                    key={i}
-                    onClick={() => {
-                      setMyEventSelected(event);
-                      setOpen(true);
-                    }}
-                    className="flex border rounded-md overflow-hidden cursor-pointer"
+                    className={cn(
+                      "m-1 ms-auto w-5 h-5 flex items-center justify-center rounded-full text-xs",
+                      eventsForDate.length > 0 &&
+                        "bg-primary sm:bg-transparent text-white sm:text-black"
+                    )}
                   >
-                    <div className="w-2 bg-red-500"></div>
-                    <div className=" flex-1 p-2">
-                      <p className="font-semibold">{event.title}</p>
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <LuMapPin size={14} />
-                        <p className="flex-1 text-sm">
-                          {joinEventLocation(event)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <LuCalendarDays size={14} />
-                        <p className="flex-1 text-sm">
-                          {formatDateToLocal(event.start?.toDateString() ?? "")}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <LuTimer size={14} />
-                        <p className="flex-1 text-sm">{`${event.startTime} - ${event.endTime}`}</p>
-                      </div>
-                    </div>
-                    <NumberBadge number={i + 1} className="m-2" />
+                    {date.getDate()}
                   </div>
-                ))
-              ) : (
-                <p>Tidak ada agenda</p>
-              )}
-            </div>
-          </div>
-        </ScrollArea>
+                );
+              },
+            },
+          }}
+        />
       </div>
-      {myEvent && (
-        <MobileListEvent selectedDate={selectedDate} events={myEvent} />
-      )}
+      <DesktopListEvent
+        session={session}
+        selectedDate={selectedDate}
+        events={myEvent}
+        onEventSelected={(event) => {
+          setMyEventSelected(event);
+          setOpen(true);
+        }}
+      />
+      <MobileListEvent
+        session={session}
+        selectedDate={selectedDate}
+        events={myEvent}
+      />
       {myEventSelected && (
         <DesktopEventDialog
           session={session}
