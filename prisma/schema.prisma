@@ -14,13 +14,27 @@ enum Role {
   INPUTER
 }
 
+enum UserAction {
+  LOGIN
+  LOGOUT
+  CREATE_USER
+  UPDATE_USER
+  DELETE_USER
+  VIEW_USER
+  CREATE_EVENT
+  UPDATE_EVENT
+  DELETE_EVENT
+  VIEW_EVENT
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
   password  String
-  role      Role     @default(ADMIN)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  role      Role      @default(ADMIN)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  userLogs  UserLog[]
 
   @@map("users")
 }
@@ -107,4 +121,15 @@ model District {
   villages  Village[]
 
   @@map("districts")
+}
+
+model UserLog {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id])
+  action    UserAction
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  userId    Int        @map("user_id")
+
+  @@map("user_logs")
 }

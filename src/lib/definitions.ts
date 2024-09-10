@@ -50,6 +50,12 @@ export type Neighborhood = Prisma.NeighborhoodGetPayload<{
   };
 }>;
 
+export type UserGroupLoginLog = {
+  user: User;
+  count: number;
+  lastDate: Date;
+};
+
 export interface MyEvent extends CalendarEvent {
   id: number;
   description?: string | null;

@@ -6,7 +6,7 @@ import "moment/locale/id";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Event as IEvent, MyEvent } from "@/lib/definitions";
+import { Event as IEvent, MyEvent, UserGroupLoginLog } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
 import { MobileListEvent } from "./MobileListEvent";
 import { DesktopEventDialog } from "./DesktopEventDialog";
@@ -20,9 +20,11 @@ const localizer = momentLocalizer(moment);
 export const CalendarSchedule = ({
   session,
   prismaEvents,
+  userGroupLoginLogs,
 }: {
   session: Session | null;
   prismaEvents: IEvent[];
+  userGroupLoginLogs: UserGroupLoginLog[];
 }) => {
   const events = prismaEvents.map<MyEvent>((event) => ({
     id: event.id,
@@ -151,6 +153,7 @@ export const CalendarSchedule = ({
           setMyEventSelected(event);
           setOpen(true);
         }}
+        userGroupLoginLogs={userGroupLoginLogs}
       />
       <MobileListEvent
         session={session}
@@ -168,6 +171,7 @@ export const CalendarSchedule = ({
             toast.error(error);
           }
         }}
+        userGroupLoginLogs={userGroupLoginLogs}
       />
       {myEventSelected && (
         <DesktopEventDialog

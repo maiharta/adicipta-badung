@@ -1,4 +1,4 @@
-import { MyEvent } from "@/lib/definitions";
+import { MyEvent, UserGroupLoginLog } from "@/lib/definitions";
 import { formatDateToLocal, joinEventLocation } from "@/lib/utils";
 import { useState } from "react";
 import {
@@ -19,17 +19,20 @@ import Link from "next/link";
 import moment from "moment";
 import { Session } from "next-auth";
 import { RemoveButton } from "./Buttons";
+import { LoginLogs } from "./LoginLogs";
 
 export const MobileListEvent = ({
   session,
   selectedDate,
   events,
   onRemove,
+  userGroupLoginLogs,
 }: {
   session: Session | null;
   selectedDate: Date;
   events: MyEvent[];
   onRemove: (event: MyEvent) => void;
+  userGroupLoginLogs: UserGroupLoginLog[];
 }) => {
   const [eventOpen, setEventOpen] = useState(-1);
 
@@ -189,6 +192,9 @@ export const MobileListEvent = ({
         ))
       ) : (
         <p>Tidak ada agenda</p>
+      )}
+      {session?.user.role === "ADMIN" && userGroupLoginLogs.length > 0 && (
+        <LoginLogs userGroupLoginLogs={userGroupLoginLogs} />
       )}
     </div>
   );

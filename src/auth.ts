@@ -24,6 +24,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (passwordsMatch) {
             const { password, ...newUser } = user;
 
+            await prisma.userLog.create({
+              data: {
+                action: "LOGIN",
+                user: {
+                  connect: {
+                    id: newUser.id,
+                  },
+                },
+              },
+            });
+
             return { user: newUser } as any;
           }
         }

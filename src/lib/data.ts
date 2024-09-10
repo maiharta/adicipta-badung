@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import prisma from "./db";
+import { UserGroupLoginLog } from "./definitions";
 
 export const getEvents = async () => {
   const events = await prisma.event.findMany({
@@ -126,4 +127,42 @@ export const getNeighborhoods = async () => {
   });
 
   return neighborhoods;
+};
+
+export const getUserGroupLoginLogs = async () => {
+  const today = new Date();
+  const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+  const endOfToday = new Date(today.setHours(23, 59, 59, 999));
+
+  const userLoginLogs = await prisma.userLog.findMany({
+    where: {
+      action: "LOGIN",
+      createdAt: {
+        gte: startOfToday,
+        lte: endOfToday,
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  const result = userLoginLogs.reduce((acc, curr) => {
+    if (!acc[curr.user.id]) {
+      acc[curr.user.id] = {
+        user: curr.user,
+        count: 0,
+        lastDate: curr.createdAt,
+      };
+    }
+
+    acc[curr.user.id].count += 1;
+    if (curr.createdAt > acc[curr.user.id].lastDate) {
+      acc[curr.user.id].lastDate = curr.createdAt;
+    }
+
+    return acc;
+  }, {} as Record<string, UserGroupLoginLog>);
+
+  return Object.values(result);
 };

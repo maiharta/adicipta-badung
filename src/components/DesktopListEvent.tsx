@@ -6,18 +6,21 @@ import { LuCalendarDays, LuMapPin, LuPlus, LuTimer } from "react-icons/lu";
 import { formatDateToLocal, joinEventLocation } from "@/lib/utils";
 import { NumberBadge } from "./NumberBadge";
 import { Session } from "next-auth";
-import { MyEvent } from "@/lib/definitions";
+import { MyEvent, UserGroupLoginLog } from "@/lib/definitions";
+import { LoginLogs } from "./LoginLogs";
 
 export const DesktopListEvent = ({
   session,
   selectedDate,
   events,
   onEventSelected,
+  userGroupLoginLogs,
 }: {
   session: Session | null;
   selectedDate: Date;
   events: MyEvent[];
   onEventSelected: (event: MyEvent) => void;
+  userGroupLoginLogs: UserGroupLoginLog[];
 }) => {
   return (
     <ScrollArea className="hidden sm:block">
@@ -73,6 +76,9 @@ export const DesktopListEvent = ({
           )}
         </div>
       </div>
+      {session?.user.role === "ADMIN" && userGroupLoginLogs.length > 0 && (
+        <LoginLogs userGroupLoginLogs={userGroupLoginLogs} />
+      )}
     </ScrollArea>
   );
 };
