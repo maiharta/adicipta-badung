@@ -9,7 +9,7 @@ export const LoginLogs = ({
   return (
     <div className="flex flex-wrap gap-1 mt-2">
       {userGroupLoginLogs.map((loginLog, i) => (
-        <span className="text-xs font-semibold">
+        <span key={i} className="text-xs font-semibold">
           {loginLog.user.username}
           <span className="font-normal">
             ({getFormattedTime(loginLog.lastDate)})
