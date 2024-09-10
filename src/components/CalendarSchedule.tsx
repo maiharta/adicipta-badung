@@ -83,7 +83,7 @@ export const CalendarSchedule = ({
   }, [isMobile]);
 
   return (
-    <div className="lg:flex-1 lg:h-screen grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div className="lg:h-screen grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="h-[400px] sm:h-[600px] lg:h-auto lg:col-span-2 bg-white p-4 rounded-xl">
         <Calendar
           localizer={localizer}
