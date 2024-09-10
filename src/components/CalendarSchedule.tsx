@@ -69,7 +69,7 @@ export const CalendarSchedule = ({
 
   const dateCellClassName = (date: Date) => {
     if (selectedDate && moment(date).isSame(selectedDate, "day")) {
-      return "bg-secondary text-white";
+      return "bg-primary/10 text-white";
     }
     return "";
   };
