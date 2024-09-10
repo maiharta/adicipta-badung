@@ -148,18 +148,19 @@ export const MobileListEvent = ({
               <NumberBadge number={i + 1} className="m-2" />
             </div>
             <div className="flex flex-col p-2">
-              {(session?.user.role === "ADMIN" ||
-                session?.user.role === "INPUTER") && (
-                <div className="grid grid-cols-2 gap-2">
-                  <Link href={`/dashboard/agenda/${event.id}/edit`}>
-                    <Button variant="outline" className="w-full flex gap-2">
-                      <LuPencil />
-                      Edit
-                    </Button>
-                  </Link>
-                  <RemoveButton onRemove={() => onRemove(event)} />
-                </div>
-              )}
+              {event.id === eventOpen &&
+                (session?.user.role === "ADMIN" ||
+                  session?.user.role === "INPUTER") && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link href={`/dashboard/agenda/${event.id}/edit`}>
+                      <Button variant="outline" className="w-full flex gap-2">
+                        <LuPencil />
+                        Edit
+                      </Button>
+                    </Link>
+                    <RemoveButton onRemove={() => onRemove(event)} />
+                  </div>
+                )}
               <Button
                 variant="outline"
                 onClick={() => {
