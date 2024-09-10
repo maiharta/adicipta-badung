@@ -29,3 +29,16 @@ export const userFormSchema = z.object({
   password: z.string().min(1, "Password tidak boleh kosong."),
   role: z.enum(["ADMIN", "INPUTER", "USER"]),
 });
+
+export const changePasswordFormSchema = z
+  .object({
+    oldPassword: z.string().min(1, "Password lama tidak boleh kosong."),
+    newPassword: z.string().min(1, "Password baru tidak boleh kosong."),
+    confirmPassword: z
+      .string()
+      .min(1, "Konfirmasi password tidak boleh kosong."),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Password baru dan konfirmasi password tidak sama",
+    path: ["confirmPassword"],
+  });

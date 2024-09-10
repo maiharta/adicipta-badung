@@ -7,11 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LuLogOut } from "react-icons/lu";
+import { LuKeyRound, LuLogOut } from "react-icons/lu";
 import { logout } from "@/lib/actions";
 import { Session } from "next-auth";
 import { Drawer } from "./Drawer";
 import { formatRole } from "@/lib/utils";
+import Link from "next/link";
 
 const Navbar = ({ session }: { session: Session | null }) => {
   return (
@@ -32,6 +33,12 @@ const Navbar = ({ session }: { session: Session | null }) => {
             <FaUserCircle size={36} className="text-primary cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
+            <Link href="/change-password">
+              <DropdownMenuItem className="cursor-pointer">
+                <LuKeyRound className="text-muted-foreground me-2" /> Ganti
+                Password
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem
               onClick={() => logout()}
               className="cursor-pointer"

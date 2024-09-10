@@ -9,11 +9,16 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-      if (isOnDashboard) {
+      const isAuthProtected =
+        nextUrl.pathname.startsWith("/dashboard") ||
+        nextUrl.pathname === "/change-password";
+      if (isAuthProtected) {
         if (isLoggedIn) {
           const role = auth.user.role;
-          if (nextUrl.pathname === "/dashboard") {
+          if (
+            nextUrl.pathname === "/dashboard" ||
+            nextUrl.pathname === "/change-password"
+          ) {
             return true;
           } else if (
             nextUrl.pathname.startsWith("/dashboard/user") &&
@@ -39,7 +44,7 @@ export const authConfig = {
       if (user) {
         return {
           ...token,
-          user,
+          user: (user as any).user,
         };
       }
 

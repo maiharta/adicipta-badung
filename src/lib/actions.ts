@@ -1,13 +1,19 @@
 "use server";
 
-import { signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-import { agendaFormSchema, loginFormSchema, userFormSchema } from "./schemas";
+import {
+  agendaFormSchema,
+  changePasswordFormSchema,
+  loginFormSchema,
+  userFormSchema,
+} from "./schemas";
 import { z } from "zod";
 import prisma from "./db";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcrypt";
+import { isRedirectError } from "next/dist/client/components/redirect";
 
 export const login = async (values: z.infer<typeof loginFormSchema>) => {
   try {
@@ -235,4 +241,58 @@ export async function updateUser(
   }
 
   redirect("/dashboard/user");
+}
+
+export async function changePassword(
+  values: z.infer<typeof changePasswordFormSchema>
+) {
+  try {
+    const session = await auth();
+
+    if (!session) {
+      redirect("/login");
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+    });
+
+    if (!user) {
+      return {
+        error: "User tidak ditemukan.",
+      };
+    }
+
+    const oldPasswordsMatch = await bcrypt.compare(
+      values.oldPassword,
+      user.password
+    );
+
+    if (!oldPasswordsMatch) {
+      return {
+        error: "Password lama yang anda masukkan salah.",
+      };
+    }
+
+    await prisma.user.update({
+      where: {
+        id: session.user.id,
+      },
+      data: {
+        password: await bcrypt.hash(values.confirmPassword, 10),
+      },
+    });
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
+    return {
+      error: "Terjadi kesalahan.",
+    };
+  }
+
+  redirect("/dashboard");
 }

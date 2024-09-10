@@ -23,7 +23,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const passwordsMatch = await bcrypt.compare(password, user.password);
           if (passwordsMatch) {
             const { password, ...newUser } = user;
-            return newUser as any;
+
+            return { user: newUser } as any;
           }
         }
 
