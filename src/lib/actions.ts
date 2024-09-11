@@ -217,13 +217,13 @@ export async function updateUser(
   try {
     const user = await prisma.user.findUnique({
       where: {
-        username: values.username,
+        id,
       },
     });
 
     if (!user)
       return {
-        error: "Username tidak ditemukan.",
+        error: "User tidak ditemukan.",
       };
 
     await prisma.user.update({
@@ -231,6 +231,8 @@ export async function updateUser(
         id,
       },
       data: {
+        username: values.username,
+        password: await bcrypt.hash(values.password, 10),
         role: values.role,
       },
     });

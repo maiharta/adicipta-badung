@@ -42,9 +42,7 @@ type UserFormProps =
 
 export const UserForm = ({ mode, user }: UserFormProps) => {
   const form = useForm<z.infer<typeof userFormSchema>>({
-    resolver: zodResolver(
-      userFormSchema.omit({ ...(mode === "edit" ? { password: true } : {}) })
-    ),
+    resolver: zodResolver(userFormSchema),
     defaultValues: {
       username: user?.username ?? "",
       password: "",
@@ -76,36 +74,32 @@ export const UserForm = ({ mode, user }: UserFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col space-y-4"
       >
-        {mode === "create" && (
-          <>
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="role"
