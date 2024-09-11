@@ -197,7 +197,7 @@ export async function createUser(values: z.infer<typeof userFormSchema>) {
     await prisma.user.create({
       data: {
         username: values.username,
-        password: await bcrypt.hash(values.password, 10),
+        password: await bcrypt.hash(values.password!, 10),
         role: values.role,
       },
     });
@@ -232,7 +232,9 @@ export async function updateUser(
       },
       data: {
         username: values.username,
-        password: await bcrypt.hash(values.password, 10),
+        ...(values.password && {
+          password: await bcrypt.hash(values.password, 10),
+        }),
         role: values.role,
       },
     });

@@ -26,7 +26,7 @@ export const agendaFormSchema = z.object({
 
 export const userFormSchema = z.object({
   username: z.string().min(1, "Username tidak boleh kosong."),
-  password: z.string().min(1, "Password tidak boleh kosong."),
+  password: z.string().optional(),
   role: z.enum(["ADMIN", "INPUTER", "USER"]),
 });
 
