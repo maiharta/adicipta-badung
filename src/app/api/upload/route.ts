@@ -12,7 +12,10 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (session?.user.role !== Role.ADMIN) {
+    if (
+      session?.user.role !== Role.ADMIN &&
+      session?.user.role !== Role.INPUTER
+    ) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
