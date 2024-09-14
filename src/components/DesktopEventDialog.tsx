@@ -50,12 +50,12 @@ export const DesktopEventDialog = ({
         </div>
         {event.inviter && (
           <div>
-            <Label>Pengundang</Label>
+            <Label>Yang Mengundang</Label>
             <p className="text-sm text-muted-foreground">{event.inviter}</p>
           </div>
         )}
         <div>
-          <Label>Kehadiran</Label>
+          <Label>Mohon Kehadiran</Label>
           {event.participants.length > 0 ? (
             event.participants.map((participant) => (
               <div key={participant.id} className="flex items-center gap-1">

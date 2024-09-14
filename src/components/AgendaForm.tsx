@@ -234,7 +234,7 @@ export const AgendaForm = ({
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel>Kehadiran</FormLabel>
+                  <FormLabel>Mohon Kehadiran</FormLabel>
                 </div>
                 {participants.map((participant) => (
                   <FormField

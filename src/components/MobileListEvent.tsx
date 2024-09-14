@@ -55,12 +55,8 @@ export const MobileListEvent = ({
       </div>
       {events.length > 0 ? (
         events.map((event, i) => (
-          <div
-            key={i}
-            className="flex flex-col bg-white rounded-md overflow-hidden cursor-pointer"
-          >
-            <div className="h-2 bg-red-500"></div>
-            <div className="flex">
+          <div key={i} className="relative">
+            <div className="flex flex-col bg-white rounded-md overflow-hidden cursor-pointer">
               <div className="flex-1 p-2 flex flex-col">
                 <p className="font-semibold">{event.title}</p>
                 <div className="flex items-center gap-1 text-gray-600">
@@ -81,14 +77,14 @@ export const MobileListEvent = ({
                   <div className="mt-4">
                     {event.inviter && (
                       <div>
-                        <Label className="text-sm">Pengundang</Label>
+                        <Label className="text-sm">Yang Mengundang</Label>
                         <p className="text-sm text-muted-foreground">
                           {event.inviter}
                         </p>
                       </div>
                     )}
                     <div>
-                      <Label className="text-sm">Kehadiran</Label>
+                      <Label className="text-sm">Mohon Kehadiran</Label>
                       {event.participants.length > 0 ? (
                         event.participants.map((participant) => (
                           <div
@@ -148,46 +144,47 @@ export const MobileListEvent = ({
                   </div>
                 )}
               </div>
-              <NumberBadge number={i + 1} className="m-2" />
+              <div className="flex flex-col p-2">
+                {event.id === eventOpen &&
+                  (session?.user.role === "ADMIN" ||
+                    session?.user.role === "INPUTER") && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link href={`/dashboard/agenda/${event.id}/edit`}>
+                        <Button variant="outline" className="w-full flex gap-2">
+                          <LuPencil />
+                          Edit
+                        </Button>
+                      </Link>
+                      <RemoveButton onRemove={() => onRemove(event)} />
+                    </div>
+                  )}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (event.id !== eventOpen) {
+                      setEventOpen(event.id);
+                    } else {
+                      setEventOpen(-1);
+                    }
+                  }}
+                  className="mx-auto mt-4 w-min text-xs"
+                >
+                  {event.id !== eventOpen ? (
+                    <>
+                      <LuArrowDownCircle className="me-1" />
+                      Show More
+                    </>
+                  ) : (
+                    <>
+                      <LuArrowUpCircle className="me-1" />
+                      Show Less
+                    </>
+                  )}
+                </Button>
+              </div>
+              <div className="h-2 bg-red-500"></div>
             </div>
-            <div className="flex flex-col p-2">
-              {event.id === eventOpen &&
-                (session?.user.role === "ADMIN" ||
-                  session?.user.role === "INPUTER") && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link href={`/dashboard/agenda/${event.id}/edit`}>
-                      <Button variant="outline" className="w-full flex gap-2">
-                        <LuPencil />
-                        Edit
-                      </Button>
-                    </Link>
-                    <RemoveButton onRemove={() => onRemove(event)} />
-                  </div>
-                )}
-              <Button
-                variant="outline"
-                onClick={() => {
-                  if (event.id !== eventOpen) {
-                    setEventOpen(event.id);
-                  } else {
-                    setEventOpen(-1);
-                  }
-                }}
-                className="mx-auto mt-4 w-min text-xs"
-              >
-                {event.id !== eventOpen ? (
-                  <>
-                    <LuArrowDownCircle className="me-1" />
-                    Show More
-                  </>
-                ) : (
-                  <>
-                    <LuArrowUpCircle className="me-1" />
-                    Show Less
-                  </>
-                )}
-              </Button>
-            </div>
+            <NumberBadge number={i + 1} className="absolute -top-2 -left-2" />
           </div>
         ))
       ) : (

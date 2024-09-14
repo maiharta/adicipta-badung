@@ -8,7 +8,7 @@ export const NumberBadge = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-center bg-primary text-primary-foreground w-6 h-6 rounded-full text-xs",
+        "flex items-center justify-center bg-green-600 text-primary-foreground w-5 h-5 rounded-full text-xs",
         className
       )}
       {...props}
