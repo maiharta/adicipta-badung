@@ -22,7 +22,7 @@ export const columns: ColumnDef<Event>[] = [
       (table
         .getSortedRowModel()
         ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
-    enableColumnFilter: false,
+    enableGlobalFilter: false,
   },
   {
     accessorKey: "title",
@@ -38,6 +38,7 @@ export const columns: ColumnDef<Event>[] = [
   },
   {
     accessorKey: "startDate",
+    accessorFn: (row) => formatDateToLocal(row.startDate.toDateString()),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Tanggal" />
     ),
@@ -52,6 +53,7 @@ export const columns: ColumnDef<Event>[] = [
   },
   {
     id: "time",
+    accessorFn: (row) => `${row.startTime} - ${row.endTime}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jam" />
     ),
@@ -61,20 +63,20 @@ export const columns: ColumnDef<Event>[] = [
   },
   {
     accessorKey: "coordinator",
+    accessorFn: (row) => row.coordinator || "-",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Penanggung Jawab" />
     ),
-    cell: ({ row }) => row.original.coordinator || "-",
   },
   {
     accessorKey: "coordinatorPhoneNumber",
+    accessorFn: (row) => row.coordinatorPhoneNumber || "-",
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
         title="No. Telepon Penanggung Jawab"
       />
     ),
-    cell: ({ row }) => row.original.coordinatorPhoneNumber || "-",
   },
   {
     id: "actions",
@@ -90,6 +92,6 @@ export const columns: ColumnDef<Event>[] = [
         </ActionButtonsWrapper>
       );
     },
-    enableColumnFilter: false,
+    enableGlobalFilter: false,
   },
 ];

@@ -22,6 +22,9 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { DataTablePagination } from "./DataTablePagination";
+import { Input } from "./ui/input";
+import { LuSearch } from "react-icons/lu";
+import { useDebouncedCallback } from "use-debounce";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,8 +59,20 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handleSearch = useDebouncedCallback((term) => {
+    setGlobalFilter(term);
+  }, 300);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
+      <div className="flex items-center space-x-2 border px-2">
+        <LuSearch />
+        <Input
+          placeholder="Cari disini..."
+          onChange={(e) => handleSearch(e.target.value)}
+          className="border-none focus-visible:ring-0 px-0"
+        />
+      </div>
       <Table className="border">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

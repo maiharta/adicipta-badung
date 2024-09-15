@@ -17,7 +17,7 @@ export const columns: ColumnDef<User>[] = [
       (table
         .getSortedRowModel()
         ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
-    enableColumnFilter: false,
+    enableGlobalFilter: false,
   },
   {
     accessorKey: "username",
@@ -27,6 +27,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "role",
+    accessorFn: (row) => formatRole(row.role),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Role" />
     ),
@@ -44,6 +45,6 @@ export const columns: ColumnDef<User>[] = [
         </ActionButtonsWrapper>
       );
     },
-    enableColumnFilter: false,
+    enableGlobalFilter: false,
   },
 ];
