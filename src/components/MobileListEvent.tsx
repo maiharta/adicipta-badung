@@ -20,6 +20,7 @@ import moment from "moment";
 import { Session } from "next-auth";
 import { RemoveButton } from "./Buttons";
 import { LoginLogs } from "./LoginLogs";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const MobileListEvent = ({
   session,
@@ -34,6 +35,8 @@ export const MobileListEvent = ({
   onRemove: (event: MyEvent) => void;
   userGroupLoginLogs: UserGroupLoginLog[];
 }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [eventOpen, setEventOpen] = useState(-1);
 
   return (
@@ -43,7 +46,7 @@ export const MobileListEvent = ({
         <Link
           href={`dashboard/agenda/tambah?tanggal=${moment(selectedDate).format(
             "YYYY-MM-DD"
-          )}`}
+          )}&redirectTo=${pathname}?${searchParams.toString()}`}
         >
           {(session?.user.role === "ADMIN" ||
             session?.user.role === "INPUTER") && (
@@ -149,7 +152,11 @@ export const MobileListEvent = ({
                   (session?.user.role === "ADMIN" ||
                     session?.user.role === "INPUTER") && (
                     <div className="grid grid-cols-2 gap-2">
-                      <Link href={`/dashboard/agenda/${event.id}/edit`}>
+                      <Link
+                        href={`/dashboard/agenda/${
+                          event.id
+                        }/edit?redirectTo=${pathname}?${searchParams.toString()}`}
+                      >
                         <Button variant="outline" className="w-full flex gap-2">
                           <LuPencil />
                           Edit

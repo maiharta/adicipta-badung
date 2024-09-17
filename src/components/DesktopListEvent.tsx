@@ -8,6 +8,7 @@ import { NumberBadge } from "./NumberBadge";
 import { Session } from "next-auth";
 import { MyEvent, UserGroupLoginLog } from "@/lib/definitions";
 import { LoginLogs } from "./LoginLogs";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const DesktopListEvent = ({
   session,
@@ -22,6 +23,9 @@ export const DesktopListEvent = ({
   onEventSelected: (event: MyEvent) => void;
   userGroupLoginLogs: UserGroupLoginLog[];
 }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   return (
     <ScrollArea className="hidden sm:block">
       <div className="bg-white p-4 rounded-xl">
@@ -30,7 +34,9 @@ export const DesktopListEvent = ({
           <Link
             href={`dashboard/agenda/tambah?tanggal=${moment(
               selectedDate
-            ).format("YYYY-MM-DD")}`}
+            ).format(
+              "YYYY-MM-DD"
+            )}&redirectTo=${pathname}?${searchParams.toString()}`}
           >
             {(session?.user.role === "ADMIN" ||
               session?.user.role === "INPUTER") && (

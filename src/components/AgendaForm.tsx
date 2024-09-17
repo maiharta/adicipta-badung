@@ -81,6 +81,7 @@ export const AgendaForm = ({
   const searchParams = useSearchParams();
 
   const date = searchParams.get("tanggal");
+  const redirectTo = searchParams.get("redirectTo");
 
   const form = useForm<z.infer<typeof agendaFormSchema>>({
     resolver: zodResolver(
@@ -159,14 +160,15 @@ export const AgendaForm = ({
       }),
     };
     if (mode === "create") {
-      const { error } = (await createAgenda(newValues)) || {};
+      const { error } = (await createAgenda(newValues, redirectTo)) || {};
       if (!error) {
         toast.success("Tambah berhasil dilakukan.");
       } else {
         toast.error(error);
       }
     } else if (mode === "edit") {
-      const { error } = (await updateAgenda(event.id, newValues)) || {};
+      const { error } =
+        (await updateAgenda(event.id, newValues, redirectTo)) || {};
       if (!error) {
         toast.success("Edit berhasil dilakukan.");
       } else {

@@ -5,7 +5,7 @@ import moment from "moment";
 import "moment/locale/id";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, parseDateOrUndefined } from "@/lib/utils";
 import { Event as IEvent, MyEvent, UserGroupLoginLog } from "@/lib/definitions";
 import { useMediaQuery } from "react-responsive";
 import { MobileListEvent } from "./MobileListEvent";
@@ -14,6 +14,7 @@ import { Session } from "next-auth";
 import { DesktopListEvent } from "./DesktopListEvent";
 import { toast } from "sonner";
 import { deleteAgenda } from "@/lib/actions";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const localizer = momentLocalizer(moment);
 
@@ -26,6 +27,10 @@ export const CalendarSchedule = ({
   prismaEvents: IEvent[];
   userGroupLoginLogs: UserGroupLoginLog[];
 }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const dateQ = parseDateOrUndefined(searchParams.get("tanggal"));
+
   const events = prismaEvents.map<MyEvent>((event) => ({
     id: event.id,
     title: event.title,
@@ -47,8 +52,8 @@ export const CalendarSchedule = ({
   }));
 
   const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
-  const [date, setDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [date, setDate] = useState(dateQ ?? new Date());
+  const [selectedDate, setSelectedDate] = useState(dateQ ?? new Date());
   const [myEvent, setMyEvent] = useState<MyEvent[]>([]);
   const [myEventSelected, setMyEventSelected] = useState<MyEvent>();
   const [open, setOpen] = useState(false);
@@ -65,6 +70,10 @@ export const CalendarSchedule = ({
 
     setSelectedDate(start);
     setMyEvent(eventsOnSelectedDate);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tanggal", moment(selectedDate).format("YYYY-MM-DD"));
+
+    window.history.replaceState({}, "", `${pathname}?${params.toString()}`);
   };
 
   const dateCellClassName = (date: Date) => {

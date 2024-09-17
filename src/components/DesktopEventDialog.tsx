@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { RemoveButton } from "./Buttons";
 import { Session } from "next-auth";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const DesktopEventDialog = ({
   open,
@@ -28,6 +29,9 @@ export const DesktopEventDialog = ({
   session: Session | null;
   onRemove: (event: MyEvent) => void;
 }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -106,7 +110,11 @@ export const DesktopEventDialog = ({
         {(session?.user.role === "ADMIN" ||
           session?.user.role === "INPUTER") && (
           <div className="grid grid-cols-2 gap-2">
-            <Link href={`/dashboard/agenda/${event.id}/edit`}>
+            <Link
+              href={`/dashboard/agenda/${
+                event.id
+              }/edit?redirectTo=${pathname}?${searchParams.toString()}`}
+            >
               <Button variant="outline" className="w-full flex gap-2">
                 <LuPencil />
                 Edit

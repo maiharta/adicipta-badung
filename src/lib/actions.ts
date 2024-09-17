@@ -45,7 +45,10 @@ export async function logout() {
   }
 }
 
-export async function createAgenda(values: z.infer<typeof agendaFormSchema>) {
+export async function createAgenda(
+  values: z.infer<typeof agendaFormSchema>,
+  redirectTo?: string | null
+) {
   try {
     await prisma.event.create({
       data: {
@@ -94,7 +97,7 @@ export async function createAgenda(values: z.infer<typeof agendaFormSchema>) {
     };
   }
 
-  redirect("/dashboard/agenda");
+  redirect(redirectTo ?? "/dashboard/agenda");
 }
 
 export async function deleteAgenda(id: number) {
@@ -115,7 +118,8 @@ export async function deleteAgenda(id: number) {
 
 export async function updateAgenda(
   id: number,
-  values: z.infer<typeof agendaFormSchema>
+  values: z.infer<typeof agendaFormSchema>,
+  redirectTo?: string | null
 ) {
   try {
     await prisma.event.update({
@@ -178,7 +182,7 @@ export async function updateAgenda(
     };
   }
 
-  redirect("/dashboard/agenda");
+  redirect(redirectTo ?? "/dashboard/agenda");
 }
 
 export async function createUser(values: z.infer<typeof userFormSchema>) {
