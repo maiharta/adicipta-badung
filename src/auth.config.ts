@@ -2,6 +2,10 @@ import { Role } from "@prisma/client";
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  session: {
+    strategy: "jwt",
+    maxAge: 3 * 60,
+  },
   providers: [],
   pages: {
     signIn: "/login",
