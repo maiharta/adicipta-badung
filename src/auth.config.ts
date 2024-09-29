@@ -4,7 +4,7 @@ import type { NextAuthConfig } from "next-auth";
 export const authConfig = {
   session: {
     strategy: "jwt",
-    maxAge: 1 * 60,
+    maxAge: 5 * 60,
   },
   providers: [],
   pages: {
