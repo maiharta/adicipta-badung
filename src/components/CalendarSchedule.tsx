@@ -109,9 +109,17 @@ export const CalendarSchedule = ({
               className: "cursor-pointer",
             };
           }}
-          eventPropGetter={() => {
+          eventPropGetter={(event) => {
+            const districtId =
+              event.neighborhood?.village.districtId ??
+              event.village?.districtId ??
+              -1;
+
             return {
-              className: "hidden sm:block bg-primary text-xs lg:text-sm",
+              className: cn(
+                "hidden sm:block bg-primary text-xs lg:text-sm",
+                [4, 5, 6].includes(districtId) && "bg-gray-400"
+              ),
             };
           }}
           selectable
@@ -143,7 +151,14 @@ export const CalendarSchedule = ({
                     className={cn(
                       "m-1 ms-auto w-5 h-5 flex items-center justify-center rounded-full text-xs",
                       eventsForDate.length > 0 &&
-                        "bg-primary sm:bg-transparent text-white sm:text-black"
+                        "bg-primary sm:bg-transparent text-white sm:text-black",
+                      eventsForDate.some((event) => {
+                        const districtId =
+                          event.neighborhood?.village.districtId ??
+                          event.village?.districtId ??
+                          -1;
+                        return [4, 5, 6].includes(districtId);
+                      }) && "bg-gray-400"
                     )}
                   >
                     {date.getDate()}
