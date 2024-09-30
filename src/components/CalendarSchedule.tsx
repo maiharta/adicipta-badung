@@ -77,9 +77,49 @@ export const CalendarSchedule = ({
   };
 
   const dateCellClassName = (date: Date) => {
-    if (selectedDate && moment(date).isSame(selectedDate, "day")) {
+    const currentDate = moment(date);
+
+    if (selectedDate && currentDate.isSame(selectedDate, "day")) {
       return "bg-primary/10 text-white";
     }
+
+    const startDate = moment("2024-09-25");
+    const endDate = moment("2024-11-23");
+
+    if (currentDate.isBetween(startDate, endDate, null, "[]")) {
+      if (
+        currentDate.isSame(moment("2024-10-17")) ||
+        currentDate.isSame(moment("2024-10-25")) ||
+        currentDate.isSame(moment("2024-11-03")) ||
+        currentDate.isSame(moment("2024-11-08")) ||
+        currentDate.isSame(moment("2024-11-22"))
+      ) {
+        return "";
+      }
+
+      const days = currentDate.diff(startDate, "days");
+
+      if (currentDate.isBefore(moment("2024-10-25"))) {
+        if (days % 2 === 0) {
+          return "bg-gray-100";
+        }
+      } else if (currentDate.isBefore(moment("2024-11-08"))) {
+        if (days % 2 === 1) {
+          return "bg-gray-100";
+        }
+      } else if (currentDate.isBefore(moment("2024-11-22"))) {
+        if (days % 2 === 0) {
+          return "bg-gray-100";
+        }
+      } else if (currentDate.isAfter(moment("2024-11-22"))) {
+        if (days % 2 === 1) {
+          return "bg-gray-100";
+        }
+      } else {
+        return "";
+      }
+    }
+
     return "";
   };
 
@@ -116,10 +156,7 @@ export const CalendarSchedule = ({
               -1;
 
             return {
-              className: cn(
-                "hidden sm:block bg-primary text-xs lg:text-sm",
-                [4, 5, 6].includes(districtId) && "bg-gray-400"
-              ),
+              className: "hidden sm:block bg-primary text-xs lg:text-sm",
             };
           }}
           selectable
@@ -151,14 +188,7 @@ export const CalendarSchedule = ({
                     className={cn(
                       "m-1 ms-auto w-5 h-5 flex items-center justify-center rounded-full text-xs",
                       eventsForDate.length > 0 &&
-                        "bg-primary sm:bg-transparent text-white sm:text-black",
-                      eventsForDate.some((event) => {
-                        const districtId =
-                          event.neighborhood?.village.districtId ??
-                          event.village?.districtId ??
-                          -1;
-                        return [4, 5, 6].includes(districtId);
-                      }) && "bg-gray-400"
+                        "bg-primary sm:bg-transparent text-white sm:text-black"
                     )}
                   >
                     {date.getDate()}
