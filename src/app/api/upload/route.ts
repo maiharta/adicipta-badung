@@ -44,7 +44,8 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
 
     const filename = Date.now() + file.name.replaceAll(" ", "_");
 
@@ -65,8 +66,11 @@ export const POST = async (req: NextRequest) => {
       return dFile;
     });
 
-    return NextResponse.json({ data: dFile, message: "Success", status: 201 });
+    return NextResponse.json({ data: dFile }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ message: "Failed", status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong." },
+      { status: 500 }
+    );
   }
 };
