@@ -44,7 +44,7 @@ const HomePage = () => {
         <Link href="/dashboard">
           <Button className="text-xl">JADWAL KAMPANYE</Button>
         </Link>
-        <Link href="#">
+        <Link href="https://input-suara.adi-cipta.com/" target="_blank">
           <Button variant="outline" className="text-xl">
             INPUT SUARA
           </Button>
