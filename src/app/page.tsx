@@ -41,9 +41,9 @@ const HomePage = () => {
         ))}
       </div>
       <div className="flex flex-col items-center space-y-2">
-        <Link href="/dashboard">
+        {/* <Link href="/dashboard">
           <Button className="text-xl">JADWAL KAMPANYE</Button>
-        </Link>
+        </Link> */}
         <Link href="https://input-suara.adi-cipta.com/" target="_blank">
           <Button variant="outline" className="text-xl">
             INPUT SUARA
